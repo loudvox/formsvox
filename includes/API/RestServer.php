@@ -270,25 +270,35 @@ class RestServer {
 		 * @param array $form     Form row array.
 		 * @param array $fields_data Submitted fields data.
 		 */
-		do_action( 'formvox_process_entry', $entry_id, $form, $fields_data );
+		do_action( 'formvox_process_entry', $entry_id, $form, $sanitized_fields );
 
 		// Process Email Notifications & Integrations
-		EmailEngine::get_instance()->send_notifications( $form, $entry_id, $fields_data );
-		IntegrationManager::get_instance()->process_submission( $form, $entry_id, $fields_data );
+		EmailEngine::get_instance()->send_notifications( $form, $entry_id, $sanitized_fields );
+		IntegrationManager::get_instance()->process_submission( $form, $entry_id, $sanitized_fields );
 
-		// Confirmation Response
-		$schema        = isset( $form['schema'] ) ? $form['schema'] : array();
-		$confirmations = isset( $schema['confirmations'] ) ? $schema['confirmations'] : array(
-			array(
+		// Confirmation Response with Conditional Routing
+		$schema              = isset( $form['schema'] ) ? $form['schema'] : array();
+		$all_confirmations   = isset( $schema['confirmations'] ) && is_array( $schema['confirmations'] ) ? $schema['confirmations'] : array();
+		$valid_confirmations = array();
+
+		foreach ( $all_confirmations as $conf ) {
+			if ( ! empty( $conf['conditional_logic'] ) && ! \FormVox\Logic\Evaluator::evaluate( $conf['conditional_logic'], $sanitized_fields ) ) {
+				continue;
+			}
+			$valid_confirmations[] = $conf;
+		}
+
+		if ( empty( $valid_confirmations ) ) {
+			$valid_confirmations[] = array(
 				'type'    => 'message',
 				'message' => __( 'Thank you! Your submission has been received.', 'formvox' ),
-			),
-		);
+			);
+		}
 
 		return rest_ensure_response( array(
 			'success'       => true,
 			'entry_id'      => $entry_id,
-			'confirmations' => $confirmations,
+			'confirmations' => $valid_confirmations,
 		) );
 	}
 

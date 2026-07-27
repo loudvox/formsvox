@@ -1,7 +1,99 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // AJAX Form Handler
-  document.querySelectorAll('.formvox-ajax-form').forEach(function (form) {
+  // Evaluates conditional logic rules on front-end input change
+  function evaluateConditionalLogic(form) {
+    var fieldWrappers = form.querySelectorAll('[data-conditional-logic]');
+    var formValues = {};
+
+    // Gather all current form input values
+    form.querySelectorAll('[name^="formvox_fields"]').forEach(function (input) {
+      var match = input.name.match(/formvox_fields\[([^\]]+)\]/);
+      if (!match) return;
+      var fieldId = match[1];
+
+      if (input.type === 'checkbox') {
+        if (!formValues[fieldId]) formValues[fieldId] = [];
+        if (input.checked) formValues[fieldId].push(input.value);
+      } else if (input.type === 'radio') {
+        if (input.checked) formValues[fieldId] = input.value;
+      } else {
+        formValues[fieldId] = input.value;
+      }
+    });
+
+    fieldWrappers.forEach(function (wrapper) {
+      var rawLogic = wrapper.getAttribute('data-conditional-logic');
+      if (!rawLogic) return;
+
+      try {
+        var logic = JSON.parse(rawLogic);
+        if (!logic.enabled || !logic.rules || !logic.rules.length) return;
+
+        var matchAll = logic.match === 'all';
+        var action = logic.action || 'show';
+        var results = [];
+
+        logic.rules.forEach(function (rule) {
+          var targetVal = rule.value;
+          var actualVal = formValues[rule.field_id];
+          var isMatch = false;
+
+          if (Array.isArray(actualVal)) {
+            if (rule.operator === 'equals' || rule.operator === 'contains') {
+              isMatch = actualVal.includes(targetVal);
+            } else if (rule.operator === 'not_equals') {
+              isMatch = !actualVal.includes(targetVal);
+            }
+          } else {
+            var actualStr = actualVal !== undefined && actualVal !== null ? String(actualVal) : '';
+            switch (rule.operator) {
+              case 'equals':
+                isMatch = actualStr === String(targetVal);
+                break;
+              case 'not_equals':
+                isMatch = actualStr !== String(targetVal);
+                break;
+              case 'contains':
+                isMatch = actualStr.includes(String(targetVal));
+                break;
+              case 'greater_than':
+                isMatch = !isNaN(actualStr) && Number(actualStr) > Number(targetVal);
+                break;
+              case 'less_than':
+                isMatch = !isNaN(actualStr) && Number(actualStr) < Number(targetVal);
+                break;
+              case 'empty':
+                isMatch = actualStr === '';
+                break;
+              case 'not_empty':
+                isMatch = actualStr !== '';
+                break;
+            }
+          }
+          results.push(isMatch);
+        });
+
+        var passed = matchAll ? !results.includes(false) : results.includes(true);
+        var visible = action === 'show' ? passed : !passed;
+
+        wrapper.style.display = visible ? '' : 'none';
+      } catch (err) {
+        console.error('FormVox conditional logic error:', err);
+      }
+    });
+  }
+
+  document.querySelectorAll('.formvox-form').forEach(function (form) {
+    evaluateConditionalLogic(form);
+    form.addEventListener('input', function () {
+      evaluateConditionalLogic(form);
+    });
+    form.addEventListener('change', function () {
+      evaluateConditionalLogic(form);
+    });
+
+    // AJAX Form Handler
     form.addEventListener('submit', function (e) {
+      if (!form.classList.contains('formvox-ajax-form')) return;
       e.preventDefault();
 
       var responseMsg = form.querySelector('.formvox-response-message');
@@ -26,12 +118,17 @@ document.addEventListener('DOMContentLoaded', function () {
           if (submitBtn) submitBtn.disabled = false;
           if (data.success) {
             form.reset();
+            evaluateConditionalLogic(form);
             var msg = (data.confirmations && data.confirmations[0] && data.confirmations[0].message) || 'Thank you! Form submitted successfully.';
             responseMsg.className = 'formvox-response-message success';
             responseMsg.innerHTML = msg;
+
+            if (data.confirmations && data.confirmations[0] && data.confirmations[0].type === 'redirect' && data.confirmations[0].redirect_url) {
+              window.location.href = data.confirmations[0].redirect_url;
+            }
           } else {
             responseMsg.className = 'formvox-response-message error';
-            responseMsg.innerHTML = data.message || 'An error occurred. Please try again.';
+            responseMsg.innerHTML = data.message || (data.errors ? Object.values(data.errors).join('<br>') : 'An error occurred. Please try again.');
           }
         })
         .catch(function () {

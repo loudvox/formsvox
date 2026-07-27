@@ -18,7 +18,7 @@ class Evaluator {
 	 * @return bool True if condition passes (visible/triggered), false otherwise.
 	 */
 	public static function evaluate( $logic, $fields ) {
-		if ( empty( $logic ) || empty( $logic['enabled'] ) || empty( $logic['rules'] ) ) {
+		if ( empty( $logic ) || empty( $logic['enabled'] ) || empty( $logic['rules'] ) || ! is_array( $logic['rules'] ) ) {
 			return true;
 		}
 
@@ -28,28 +28,52 @@ class Evaluator {
 
 		$results = array();
 		foreach ( $rules as $rule ) {
-			$target_id = isset( $rule['field_id'] ) ? $rule['field_id'] : '';
-			$operator  = isset( $rule['operator'] ) ? $rule['operator'] : 'equals';
+			$target_id  = isset( $rule['field_id'] ) ? $rule['field_id'] : '';
+			$operator   = isset( $rule['operator'] ) ? $rule['operator'] : 'equals';
 			$target_val = isset( $rule['value'] ) ? $rule['value'] : '';
 
-			$actual_val = isset( $fields[ $target_id ] ) ? $fields[ $target_id ] : '';
+			$actual_val = isset( $fields[ $target_id ] ) ? $fields[ $target_id ] : null;
 			$is_match   = false;
 
 			switch ( $operator ) {
 				case 'equals':
-					$is_match = ( (string) $actual_val === (string) $target_val );
+					if ( is_array( $actual_val ) ) {
+						$is_match = in_array( (string) $target_val, array_map( 'strval', $actual_val ), true );
+					} else {
+						$is_match = ( (string) $actual_val === (string) $target_val );
+					}
 					break;
+
 				case 'not_equals':
-					$is_match = ( (string) $actual_val !== (string) $target_val );
+					if ( is_array( $actual_val ) ) {
+						$is_match = ! in_array( (string) $target_val, array_map( 'strval', $actual_val ), true );
+					} else {
+						$is_match = ( (string) $actual_val !== (string) $target_val );
+					}
 					break;
+
 				case 'contains':
-					$is_match = ( false !== strpos( (string) $actual_val, (string) $target_val ) );
+					if ( is_array( $actual_val ) ) {
+						$is_match = in_array( (string) $target_val, array_map( 'strval', $actual_val ), true );
+					} else {
+						$is_match = ( false !== strpos( (string) $actual_val, (string) $target_val ) );
+					}
 					break;
+
+				case 'greater_than':
+					$is_match = is_numeric( $actual_val ) && is_numeric( $target_val ) && ( (float) $actual_val > (float) $target_val );
+					break;
+
+				case 'less_than':
+					$is_match = is_numeric( $actual_val ) && is_numeric( $target_val ) && ( (float) $actual_val < (float) $target_val );
+					break;
+
 				case 'empty':
-					$is_match = empty( $actual_val );
+					$is_match = self::is_value_empty( $actual_val );
 					break;
+
 				case 'not_empty':
-					$is_match = ! empty( $actual_val );
+					$is_match = ! self::is_value_empty( $actual_val );
 					break;
 			}
 
@@ -59,5 +83,24 @@ class Evaluator {
 		$condition_passed = $match_all ? ! in_array( false, $results, true ) : in_array( true, $results, true );
 
 		return 'show' === $action ? $condition_passed : ! $condition_passed;
+	}
+
+	/**
+	 * Helper to check if a value is truly empty ("0" and 0 are considered NON-empty).
+	 *
+	 * @param mixed $val Value to test.
+	 * @return bool
+	 */
+	public static function is_value_empty( $val ) {
+		if ( null === $val || false === $val || '' === $val ) {
+			return true;
+		}
+		if ( is_array( $val ) ) {
+			$filtered = array_filter( $val, function( $item ) {
+				return null !== $item && '' !== $item;
+			} );
+			return empty( $filtered );
+		}
+		return false;
 	}
 }

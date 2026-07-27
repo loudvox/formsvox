@@ -24,6 +24,11 @@ class EmailEngine {
 		$notifications = isset( $schema['notifications'] ) && is_array( $schema['notifications'] ) ? $schema['notifications'] : array();
 
 		foreach ( $notifications as $notification ) {
+			// Check conditional logic routing for notification
+			if ( ! empty( $notification['conditional_logic'] ) && ! \FormVox\Logic\Evaluator::evaluate( $notification['conditional_logic'], $submitted_fields ) ) {
+				continue;
+			}
+
 			$to      = $this->parse_smart_tags( $notification['to_email'], $form, $entry_id, $submitted_fields );
 			$subject = $this->parse_smart_tags( $notification['subject'], $form, $entry_id, $submitted_fields );
 			$body    = $this->parse_smart_tags( $notification['message'], $form, $entry_id, $submitted_fields );

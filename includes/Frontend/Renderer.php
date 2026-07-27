@@ -75,7 +75,12 @@ class Renderer {
 			$field_obj = $registry->get_field( $type );
 
 			if ( $field_obj ) {
-				$fields_html .= $field_obj->render( $field_config );
+				$rendered = $field_obj->render( $field_config );
+				if ( ! empty( $field_config['conditional_logic'] ) && ! empty( $field_config['conditional_logic']['enabled'] ) ) {
+					$logic_json = esc_attr( wp_json_encode( $field_config['conditional_logic'] ) );
+					$rendered   = preg_replace( '/class="([^"]*formvox-field[^"]*)"/', 'class="$1" data-conditional-logic="' . $logic_json . '"', $rendered, 1 );
+				}
+				$fields_html .= $rendered;
 			}
 		}
 
