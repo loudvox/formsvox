@@ -186,18 +186,82 @@ class RestServer {
 			return new \WP_Error( 'form_not_found', __( 'Form not found.', 'formvox' ), array( 'status' => 404 ) );
 		}
 
+		// Enforce form published status
+		if ( isset( $form['status'] ) && 'publish' !== $form['status'] ) {
+			return new \WP_Error( 'form_not_published', __( 'This form is not active or published.', 'formvox' ), array( 'status' => 403 ) );
+		}
+
+		// IP-based rate limiting (Max 10 submissions per 60 seconds per IP/form)
+		$ip            = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '127.0.0.1';
+		$transient_key = 'formvox_rate_' . md5( $ip . '_' . $form_id );
+		$rate_count    = (int) get_transient( $transient_key );
+		if ( $rate_count >= 10 ) {
+			return new \WP_Error( 'rate_limit_exceeded', __( 'Too many submissions. Please wait a minute and try again.', 'formvox' ), array( 'status' => 429 ) );
+		}
+		set_transient( $transient_key, $rate_count + 1, 60 );
+
 		$params = $request->get_params();
 
-		// Anti-Spam Check
+		// Anti-Spam Honeypot & Time-Trap Check
 		$honeypot = Honeypot::get_instance();
 		if ( ! $honeypot->verify( $params ) ) {
 			return new \WP_Error( 'spam_detected', __( 'Spam detection triggered.', 'formvox' ), array( 'status' => 400 ) );
 		}
 
-		$fields_data = isset( $params['formvox_fields'] ) && is_array( $params['formvox_fields'] ) ? $params['formvox_fields'] : array();
+		// Server-Side CAPTCHA Verification (reCAPTCHA, Turnstile, hCaptcha)
+		$captcha_result = \FormVox\AntiSpam\CaptchaVerifier::verify( $params );
+		if ( is_wp_error( $captcha_result ) ) {
+			return $captcha_result;
+		}
+
+		$raw_fields = isset( $params['formvox_fields'] ) && is_array( $params['formvox_fields'] ) ? $params['formvox_fields'] : array();
+		$schema     = isset( $form['schema'] ) ? $form['schema'] : array();
+		$form_fields = isset( $schema['fields'] ) && is_array( $schema['fields'] ) ? $schema['fields'] : array();
+
+		$registry         = \FormVox\Fields\FieldRegistry::get_instance();
+		$sanitized_fields = array();
+		$errors           = array();
+
+		// Field-by-field validation and sanitization
+		foreach ( $form_fields as $field_config ) {
+			$field_id  = isset( $field_config['id'] ) ? $field_config['id'] : '';
+			$type      = isset( $field_config['type'] ) ? $field_config['type'] : 'text';
+			$field_obj = $registry->get_field( $type );
+
+			if ( ! $field_id || ! $field_obj ) {
+				continue;
+			}
+
+			// Check conditional logic visibility for this field
+			if ( ! empty( $field_config['conditional_logic'] ) && ! \FormVox\Logic\Evaluator::evaluate( $field_config['conditional_logic'], $raw_fields ) ) {
+				continue; // Skip hidden conditional fields
+			}
+
+			$val = isset( $raw_fields[ $field_id ] ) ? $raw_fields[ $field_id ] : null;
+
+			// Validate field value
+			$validation_result = $field_obj->validate( $val, $field_config, $form );
+			if ( is_wp_error( $validation_result ) ) {
+				$errors[ $field_id ] = $validation_result->get_error_message();
+			} else {
+				// Sanitize field value
+				$sanitized_fields[ $field_id ] = $field_obj->sanitize( $val, $field_config );
+			}
+		}
+
+		if ( ! empty( $errors ) ) {
+			return new \WP_Error(
+				'validation_failed',
+				__( 'Validation failed for one or more fields.', 'formvox' ),
+				array(
+					'status' => 400,
+					'errors' => $errors,
+				)
+			);
+		}
 
 		// Create Entry
-		$entry_id = EntryModel::create( $form_id, $fields_data );
+		$entry_id = EntryModel::create( $form_id, $sanitized_fields );
 
 		/**
 		 * Action Hook: formvox_process_entry
