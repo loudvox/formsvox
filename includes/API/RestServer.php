@@ -433,6 +433,7 @@ class RestServer {
 			'mailchimp_api_key',
 			'voicecore_api_key',
 			'ai_transcript_retention',
+			'ai_daily_cap',
 		);
 
 		foreach ( $allowed as $key ) {
@@ -460,13 +461,39 @@ class RestServer {
 	}
 
 	public function ai_chat_relay( \WP_REST_Request $request ) {
-		$params    = $request->get_json_params();
-		$form_id   = isset( $params['form_id'] ) ? intval( $params['form_id'] ) : 0;
-		$form      = \FormsVox\DB\FormModel::get( $form_id );
+		$params  = $request->get_json_params();
+		$form_id = isset( $params['form_id'] ) ? intval( $params['form_id'] ) : 0;
+		$form    = \FormsVox\DB\FormModel::get( $form_id );
 
 		if ( ! $form || 'publish' !== $form['status'] ) {
 			return new \WP_Error( 'form_not_found', __( 'Form not found or unpublished.', 'formsvox' ), array( 'status' => 404 ) );
 		}
+
+		// 1. Honeypot check
+		if ( ! empty( $params['formsvox_hp'] ) ) {
+			return new \WP_Error( 'bot_detected', __( 'Spam activity detected.', 'formsvox' ), array( 'status' => 403 ) );
+		}
+
+		// 2. IP Rate Limiting (20 req / 60s per IP per form)
+		$ip       = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '127.0.0.1';
+		$rate_key = 'formsvox_ai_rate_' . md5( $ip . '_' . $form_id );
+		$count    = (int) get_transient( $rate_key );
+
+		if ( $count >= 20 ) {
+			return new \WP_Error( 'rate_limit_exceeded', __( 'Too many requests. Please slow down.', 'formsvox' ), array( 'status' => 429 ) );
+		}
+		set_transient( $rate_key, $count + 1, 60 );
+
+		// 3. Per-site Daily Cap Enforcement
+		$settings  = get_option( 'formsvox_settings', array() );
+		$daily_cap = isset( $settings['ai_daily_cap'] ) ? intval( $settings['ai_daily_cap'] ) : 500;
+		$today_key = 'formsvox_ai_daily_' . date( 'Ymd' );
+		$daily_cnt = (int) get_option( $today_key, 0 );
+
+		if ( $daily_cnt >= $daily_cap ) {
+			return new \WP_Error( 'daily_cap_exceeded', __( 'Per-site daily AI request cap reached.', 'formsvox' ), array( 'status' => 429 ) );
+		}
+		update_option( $today_key, $daily_cnt + 1 );
 
 		$messages = isset( $params['messages'] ) && is_array( $params['messages'] ) ? $params['messages'] : array();
 		$res      = \FormsVox\AI\Client::request( '/v1/chat', 'POST', array(
