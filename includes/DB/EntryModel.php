@@ -71,6 +71,23 @@ class EntryModel {
 		return $entry_id;
 	}
 
+	public static function add_meta( $entry_id, $meta_key, $meta_value ) {
+		global $wpdb;
+		$entry_meta_table = self::get_meta_table_name();
+		$val = is_array( $meta_value ) ? wp_json_encode( $meta_value ) : (string) $meta_value;
+
+		$wpdb->insert(
+			$entry_meta_table,
+			array(
+				'entry_id'   => intval( $entry_id ),
+				'field_id'   => 'system',
+				'meta_key'   => sanitize_text_field( $meta_key ),
+				'meta_value' => $val,
+			),
+			array( '%d', '%s', '%s', '%s' )
+		);
+	}
+
 	/**
 	 * Get single entry with meta.
 	 *
