@@ -43,8 +43,8 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({ formId, onSaveSuccess 
 
   useEffect(() => {
     if (formId) {
-      fetch(`/wp-json/formvox/v1/forms/${formId}`, {
-        headers: { 'X-WP-Nonce': (window as any).formvoxAdmin?.nonce || '' },
+      fetch(`/wp-json/formsvox/v1/forms/${formId}`, {
+        headers: { 'X-WP-Nonce': (window as any).formsvoxAdmin?.nonce || '' },
       })
         .then((res) => res.json())
         .then((data: FormRecord) => {
@@ -96,7 +96,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({ formId, onSaveSuccess 
   const handleSave = async () => {
     setIsSaving(true);
     setSaveStatus('Saving...');
-    const url = formId ? `/wp-json/formvox/v1/forms/${formId}` : '/wp-json/formvox/v1/forms';
+    const url = formId ? `/wp-json/formsvox/v1/forms/${formId}` : '/wp-json/formsvox/v1/forms';
     const method = formId ? 'PUT' : 'POST';
 
     try {
@@ -104,7 +104,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({ formId, onSaveSuccess 
         method,
         headers: {
           'Content-Type': 'application/json',
-          'X-WP-Nonce': (window as any).formvoxAdmin?.nonce || '',
+          'X-WP-Nonce': (window as any).formsvoxAdmin?.nonce || '',
         },
         body: JSON.stringify({
           title: schema.settings.title,
@@ -125,15 +125,15 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({ formId, onSaveSuccess 
   const selectedField = schema.fields.find((f) => f.id === selectedFieldId) || null;
 
   return (
-    <div className="formvox-builder-container">
-      <header className="formvox-builder-header">
+    <div className="formsvox-builder-container">
+      <header className="formsvox-builder-header">
         <input
           type="text"
-          className="formvox-title-input"
+          className="formsvox-title-input"
           value={schema.settings.title}
           onChange={(e) => setSchema({ ...schema, settings: { ...schema.settings, title: e.target.value } })}
         />
-        <div className="formvox-header-nav">
+        <div className="formsvox-header-nav">
           <button
             className={`button ${activeTab === 'fields' ? 'button-primary' : ''}`}
             onClick={() => setActiveTab('fields')}
@@ -153,40 +153,40 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({ formId, onSaveSuccess 
             Live Preview
           </button>
         </div>
-        <div className="formvox-header-actions">
-          {saveStatus && <span className="formvox-save-status">{saveStatus}</span>}
+        <div className="formsvox-header-actions">
+          {saveStatus && <span className="formsvox-save-status">{saveStatus}</span>}
           <button type="button" className="button button-primary button-large" onClick={handleSave} disabled={isSaving}>
             {isSaving ? 'Saving...' : 'Save Form'}
           </button>
         </div>
       </header>
 
-      <div className="formvox-builder-body">
+      <div className="formsvox-builder-body">
         {activeTab === 'fields' && (
           <>
             <FieldPalette onAddField={handleAddField} />
-            <main className="formvox-canvas">
+            <main className="formsvox-canvas">
               <h3>Form Canvas</h3>
               {schema.fields.length === 0 ? (
-                <div className="formvox-canvas-empty">
+                <div className="formsvox-canvas-empty">
                   Click fields on the left palette to add them to your form.
                 </div>
               ) : (
                 schema.fields.map((field) => (
                   <div
                     key={field.id}
-                    className={`formvox-canvas-item ${selectedFieldId === field.id ? 'selected' : ''}`}
+                    className={`formsvox-canvas-item ${selectedFieldId === field.id ? 'selected' : ''}`}
                     onClick={() => setSelectedFieldId(field.id)}
                   >
-                    <div className="formvox-canvas-item-label">
+                    <div className="formsvox-canvas-item-label">
                       {field.label} {field.required && <span style={{ color: 'red' }}>*</span>}
                     </div>
-                    <div className="formvox-canvas-item-type">{field.type}</div>
+                    <div className="formsvox-canvas-item-type">{field.type}</div>
                   </div>
                 ))
               )}
             </main>
-            <aside className="formvox-sidebar">
+            <aside className="formsvox-sidebar">
               <FieldSettings
                 field={selectedField}
                 allFields={schema.fields}
@@ -202,7 +202,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({ formId, onSaveSuccess 
         )}
 
         {activeTab === 'preview' && (
-          <div className="formvox-live-preview">
+          <div className="formsvox-live-preview">
             <h3>Live Preview</h3>
             <form onSubmit={(e) => e.preventDefault()}>
               {schema.fields.map((f) => (

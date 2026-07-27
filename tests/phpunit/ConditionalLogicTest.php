@@ -1,9 +1,9 @@
 <?php
 
-namespace FormVox\Tests;
+namespace FormsVox\Tests;
 
 use PHPUnit\Framework\TestCase;
-use FormVox\Logic\Evaluator;
+use FormsVox\Logic\Evaluator;
 
 class ConditionalLogicTest extends TestCase {
 	public function test_equals_and_not_equals() {

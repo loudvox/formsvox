@@ -1,6 +1,6 @@
 <?php
 
-namespace FormVox\Integrations;
+namespace FormsVox\Integrations;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -42,7 +42,7 @@ class IntegrationManager {
 
 		// Mailchimp Opt-in Integration
 		if ( ! empty( $integrations['mailchimp'] ) && ! empty( $integrations['mailchimp']['list_id'] ) ) {
-			$settings = get_option( 'formvox_settings', array() );
+			$settings = get_option( 'formsvox_settings', array() );
 			$api_key  = isset( $settings['mailchimp_api_key'] ) ? $settings['mailchimp_api_key'] : '';
 
 			if ( ! empty( $api_key ) ) {
@@ -69,7 +69,7 @@ class IntegrationManager {
 		// Stripe Payments Integration
 		if ( ! empty( $integrations['stripe'] ) ) {
 			// One-time payment processing token / charge handler stub
-			do_action( 'formvox_stripe_payment_process', $form, $entry_id, $fields_data );
+			do_action( 'formsvox_stripe_payment_process', $form, $entry_id, $fields_data );
 		}
 	}
 }

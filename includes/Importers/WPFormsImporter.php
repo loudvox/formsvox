@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Importers;
+namespace FormsVox\Importers;
 
-use FormVox\DB\FormModel;
+use FormsVox\DB\FormModel;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -22,7 +22,7 @@ class WPFormsImporter {
 	}
 
 	/**
-	 * Map and import WPForms JSON export data into FormVox schema.
+	 * Map and import WPForms JSON export data into FormsVox schema.
 	 *
 	 * @param string|array $json_data WPForms JSON export payload.
 	 * @return array|\WP_Error
@@ -31,15 +31,15 @@ class WPFormsImporter {
 		$decoded = is_array( $json_data ) ? $json_data : json_decode( $json_data, true );
 
 		if ( ! is_array( $decoded ) ) {
-			return new \WP_Error( 'invalid_json', __( 'Invalid or corrupted WPForms JSON structure.', 'formvox' ) );
+			return new \WP_Error( 'invalid_json', __( 'Invalid or corrupted WPForms JSON structure.', 'formsvox' ) );
 		}
 
 		// Support both single form JSON export and array wrapped exports
 		$wpf_form = isset( $decoded[0] ) && is_array( $decoded[0] ) ? $decoded[0] : $decoded;
 
-		$title = isset( $wpf_form['settings']['form_title'] ) ? sanitize_text_field( $wpf_form['settings']['form_title'] ) : __( 'Imported WPForms Form', 'formvox' );
+		$title = isset( $wpf_form['settings']['form_title'] ) ? sanitize_text_field( $wpf_form['settings']['form_title'] ) : __( 'Imported WPForms Form', 'formsvox' );
 		$desc  = isset( $wpf_form['settings']['form_desc'] ) ? sanitize_text_field( $wpf_form['settings']['form_desc'] ) : '';
-		$sub_txt = isset( $wpf_form['settings']['submit_text'] ) ? sanitize_text_field( $wpf_form['settings']['submit_text'] ) : __( 'Submit', 'formvox' );
+		$sub_txt = isset( $wpf_form['settings']['submit_text'] ) ? sanitize_text_field( $wpf_form['settings']['submit_text'] ) : __( 'Submit', 'formsvox' );
 
 		$type_map = array(
 			'text'               => 'text',
@@ -76,7 +76,7 @@ class WPFormsImporter {
 				$field_config = array(
 					'id'          => $field_id,
 					'type'        => $fv_type,
-					'label'       => isset( $wpf_field['label'] ) ? sanitize_text_field( $wpf_field['label'] ) : __( 'Field', 'formvox' ),
+					'label'       => isset( $wpf_field['label'] ) ? sanitize_text_field( $wpf_field['label'] ) : __( 'Field', 'formsvox' ),
 					'description' => isset( $wpf_field['description'] ) ? sanitize_text_field( $wpf_field['description'] ) : '',
 					'placeholder' => isset( $wpf_field['placeholder'] ) ? sanitize_text_field( $wpf_field['placeholder'] ) : '',
 					'required'    => ! empty( $wpf_field['required'] ),
@@ -138,7 +138,7 @@ class WPFormsImporter {
 				$confirmations[] = array(
 					'id'           => 'conf_' . $cid,
 					'type'         => $c_type,
-					'message'      => isset( $conf['message'] ) ? sanitize_textarea_field( $conf['message'] ) : __( 'Thank you for your submission.', 'formvox' ),
+					'message'      => isset( $conf['message'] ) ? sanitize_textarea_field( $conf['message'] ) : __( 'Thank you for your submission.', 'formsvox' ),
 					'redirect_url' => isset( $conf['page'] ) ? esc_url_raw( $conf['page'] ) : '',
 				);
 			}
@@ -148,7 +148,7 @@ class WPFormsImporter {
 			$confirmations[] = array(
 				'id'      => 'conf_1',
 				'type'    => 'message',
-				'message' => __( 'Thank you! Your submission has been received.', 'formvox' ),
+				'message' => __( 'Thank you! Your submission has been received.', 'formsvox' ),
 			);
 		}
 

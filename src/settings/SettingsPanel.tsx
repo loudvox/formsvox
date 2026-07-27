@@ -14,8 +14,8 @@ export const SettingsPanel: React.FC = () => {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    fetch('/wp-json/formvox/v1/settings', {
-      headers: { 'X-WP-Nonce': (window as any).formvoxAdmin?.nonce || '' },
+    fetch('/wp-json/formsvox/v1/settings', {
+      headers: { 'X-WP-Nonce': (window as any).formsvoxAdmin?.nonce || '' },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -25,11 +25,11 @@ export const SettingsPanel: React.FC = () => {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch('/wp-json/formvox/v1/settings', {
+    await fetch('/wp-json/formsvox/v1/settings', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-WP-Nonce': (window as any).formvoxAdmin?.nonce || '',
+        'X-WP-Nonce': (window as any).formsvoxAdmin?.nonce || '',
       },
       body: JSON.stringify(settings),
     });
@@ -38,8 +38,8 @@ export const SettingsPanel: React.FC = () => {
   };
 
   return (
-    <div className="formvox-settings-page">
-      <h2>FormVox Settings</h2>
+    <div className="formsvox-settings-page">
+      <h2>FormsVox Settings</h2>
       {saved && <div className="notice notice-success inline"><p>Settings saved successfully.</p></div>}
       <form onSubmit={handleSave}>
         <h3>Anti-Spam Credentials</h3>
@@ -110,7 +110,7 @@ export const SettingsPanel: React.FC = () => {
                     checked={settings.delete_on_uninstall}
                     onChange={(e) => setSettings({ ...settings, delete_on_uninstall: e.target.checked })}
                   />
-                  Remove all FormVox forms, entries, and options upon plugin deletion.
+                  Remove all FormsVox forms, entries, and options upon plugin deletion.
                 </label>
               </td>
             </tr>

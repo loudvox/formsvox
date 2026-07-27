@@ -1,6 +1,6 @@
 <?php
 
-namespace FormVox\AntiSpam;
+namespace FormsVox\AntiSpam;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -17,14 +17,14 @@ class CaptchaVerifier {
 	 * @return true|\WP_Error
 	 */
 	public static function verify( $params ) {
-		$settings = get_option( 'formvox_settings', array() );
+		$settings = get_option( 'formsvox_settings', array() );
 
 		// 1. Google reCAPTCHA v2 / v3
 		$recaptcha_secret = isset( $settings['recaptcha_secret_key'] ) ? trim( $settings['recaptcha_secret_key'] ) : '';
 		if ( ! empty( $recaptcha_secret ) ) {
 			$token = isset( $params['g-recaptcha-response'] ) ? sanitize_text_field( $params['g-recaptcha-response'] ) : '';
 			if ( empty( $token ) ) {
-				return new \WP_Error( 'recaptcha_failed', __( 'reCAPTCHA verification token missing.', 'formvox' ), array( 'status' => 400 ) );
+				return new \WP_Error( 'recaptcha_failed', __( 'reCAPTCHA verification token missing.', 'formsvox' ), array( 'status' => 400 ) );
 			}
 			$res = wp_remote_post( 'https://www.google.com/recaptcha/api/siteverify', array(
 				'body' => array(
@@ -34,11 +34,11 @@ class CaptchaVerifier {
 				),
 			) );
 			if ( is_wp_error( $res ) ) {
-				return new \WP_Error( 'recaptcha_error', __( 'Unable to verify reCAPTCHA with Google.', 'formvox' ), array( 'status' => 400 ) );
+				return new \WP_Error( 'recaptcha_error', __( 'Unable to verify reCAPTCHA with Google.', 'formsvox' ), array( 'status' => 400 ) );
 			}
 			$body = json_decode( wp_remote_retrieve_body( $res ), true );
 			if ( empty( $body['success'] ) ) {
-				return new \WP_Error( 'recaptcha_failed', __( 'reCAPTCHA verification failed.', 'formvox' ), array( 'status' => 400 ) );
+				return new \WP_Error( 'recaptcha_failed', __( 'reCAPTCHA verification failed.', 'formsvox' ), array( 'status' => 400 ) );
 			}
 		}
 
@@ -47,7 +47,7 @@ class CaptchaVerifier {
 		if ( ! empty( $turnstile_secret ) ) {
 			$token = isset( $params['cf-turnstile-response'] ) ? sanitize_text_field( $params['cf-turnstile-response'] ) : '';
 			if ( empty( $token ) ) {
-				return new \WP_Error( 'turnstile_failed', __( 'Cloudflare Turnstile token missing.', 'formvox' ), array( 'status' => 400 ) );
+				return new \WP_Error( 'turnstile_failed', __( 'Cloudflare Turnstile token missing.', 'formsvox' ), array( 'status' => 400 ) );
 			}
 			$res = wp_remote_post( 'https://challenges.cloudflare.com/turnstile/v0/siteverify', array(
 				'body' => array(
@@ -56,11 +56,11 @@ class CaptchaVerifier {
 				),
 			) );
 			if ( is_wp_error( $res ) ) {
-				return new \WP_Error( 'turnstile_error', __( 'Unable to verify Turnstile token.', 'formvox' ), array( 'status' => 400 ) );
+				return new \WP_Error( 'turnstile_error', __( 'Unable to verify Turnstile token.', 'formsvox' ), array( 'status' => 400 ) );
 			}
 			$body = json_decode( wp_remote_retrieve_body( $res ), true );
 			if ( empty( $body['success'] ) ) {
-				return new \WP_Error( 'turnstile_failed', __( 'Cloudflare Turnstile verification failed.', 'formvox' ), array( 'status' => 400 ) );
+				return new \WP_Error( 'turnstile_failed', __( 'Cloudflare Turnstile verification failed.', 'formsvox' ), array( 'status' => 400 ) );
 			}
 		}
 
@@ -69,7 +69,7 @@ class CaptchaVerifier {
 		if ( ! empty( $hcaptcha_secret ) ) {
 			$token = isset( $params['h-captcha-response'] ) ? sanitize_text_field( $params['h-captcha-response'] ) : '';
 			if ( empty( $token ) ) {
-				return new \WP_Error( 'hcaptcha_failed', __( 'hCaptcha verification token missing.', 'formvox' ), array( 'status' => 400 ) );
+				return new \WP_Error( 'hcaptcha_failed', __( 'hCaptcha verification token missing.', 'formsvox' ), array( 'status' => 400 ) );
 			}
 			$res = wp_remote_post( 'https://api.hcaptcha.com/siteverify', array(
 				'body' => array(
@@ -78,11 +78,11 @@ class CaptchaVerifier {
 				),
 			) );
 			if ( is_wp_error( $res ) ) {
-				return new \WP_Error( 'hcaptcha_error', __( 'Unable to verify hCaptcha token.', 'formvox' ), array( 'status' => 400 ) );
+				return new \WP_Error( 'hcaptcha_error', __( 'Unable to verify hCaptcha token.', 'formsvox' ), array( 'status' => 400 ) );
 			}
 			$body = json_decode( wp_remote_retrieve_body( $res ), true );
 			if ( empty( $body['success'] ) ) {
-				return new \WP_Error( 'hcaptcha_failed', __( 'hCaptcha verification failed.', 'formvox' ), array( 'status' => 400 ) );
+				return new \WP_Error( 'hcaptcha_failed', __( 'hCaptcha verification failed.', 'formsvox' ), array( 'status' => 400 ) );
 			}
 		}
 

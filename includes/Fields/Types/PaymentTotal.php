@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class PaymentTotal extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Total Price Display', 'formvox' );
+		return __( 'Total Price Display', 'formsvox' );
 	}
 
 	public function get_category() {
@@ -30,9 +30,9 @@ class PaymentTotal extends BaseField {
 		$label    = esc_html( $field['label'] );
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-payment-total %s" data-field-id="%s">
-				<label class="formvox-field-label">%s: $<span class="formvox-total-amount">0.00</span></label>
-				<input type="hidden" name="formvox_fields[%s]" class="formvox-total-input" value="0.00" />
+			'<div class="formsvox-field formsvox-field-payment-total %s" data-field-id="%s">
+				<label class="formsvox-field-label">%s: $<span class="formsvox-total-amount">0.00</span></label>
+				<input type="hidden" name="formsvox_fields[%s]" class="formsvox-total-input" value="0.00" />
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,

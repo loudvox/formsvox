@@ -1,6 +1,6 @@
 <?php
 
-namespace FormVox\Notifications;
+namespace FormsVox\Notifications;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -25,7 +25,7 @@ class EmailEngine {
 
 		foreach ( $notifications as $notification ) {
 			// Check conditional logic routing for notification
-			if ( ! empty( $notification['conditional_logic'] ) && ! \FormVox\Logic\Evaluator::evaluate( $notification['conditional_logic'], $submitted_fields ) ) {
+			if ( ! empty( $notification['conditional_logic'] ) && ! \FormsVox\Logic\Evaluator::evaluate( $notification['conditional_logic'], $submitted_fields ) ) {
 				continue;
 			}
 
@@ -40,7 +40,7 @@ class EmailEngine {
 			/**
 			 * Filter notification email attributes.
 			 */
-			$email_data = apply_filters( 'formvox_notification_email', array(
+			$email_data = apply_filters( 'formsvox_notification_email', array(
 				'to'      => $to,
 				'subject' => $subject,
 				'body'    => $body,

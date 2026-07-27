@@ -1,6 +1,6 @@
-# FormVox Releasing Guide & SVN Workflow
+# FormsVox Releasing Guide & SVN Workflow
 
-FormVox uses the official 10up `action-wordpress-plugin-deploy` GitHub Action to automate releases to the official WordPress.org SVN repository.
+FormsVox uses the official 10up `action-wordpress-plugin-deploy` GitHub Action to automate releases to the official WordPress.org SVN repository.
 
 ## GitHub Secrets Required
 - `SVN_USERNAME`: Your WordPress.org username.
@@ -10,7 +10,7 @@ FormVox uses the official 10up `action-wordpress-plugin-deploy` GitHub Action to
 Releases are triggered automatically whenever a new Git tag (e.g. `v1.0.0`) is created and pushed to the `main` branch.
 
 ## Pre-Release Checklist
-1. Update version number in `formvox.php` (`FORMVOX_VERSION`).
+1. Update version number in `formsvox.php` (`FORMSVOX_VERSION`).
 2. Update `readme.txt` header (`Stable tag: X.Y.Z`) and Changelog section.
 3. Run test suite: `composer test` and `npm run test:e2e`.
 4. Run static analysis and linting: `composer phpcs` and `composer phpstan`.

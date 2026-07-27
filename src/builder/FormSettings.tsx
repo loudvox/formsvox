@@ -32,8 +32,8 @@ export const FormSettings: React.FC<FormSettingsProps> = ({ schema, onUpdateSche
   };
 
   return (
-    <div className="formvox-form-settings-panel">
-      <div className="formvox-sub-tabs">
+    <div className="formsvox-form-settings-panel">
+      <div className="formsvox-sub-tabs">
         <button
           className={activeTab === 'general' ? 'active' : ''}
           onClick={() => setActiveTab('general')}
@@ -55,8 +55,8 @@ export const FormSettings: React.FC<FormSettingsProps> = ({ schema, onUpdateSche
       </div>
 
       {activeTab === 'general' && (
-        <div className="formvox-tab-content">
-          <div className="formvox-control-group">
+        <div className="formsvox-tab-content">
+          <div className="formsvox-control-group">
             <label>Form Title</label>
             <input
               type="text"
@@ -64,7 +64,7 @@ export const FormSettings: React.FC<FormSettingsProps> = ({ schema, onUpdateSche
               onChange={(e) => updateGeneral('title', e.target.value)}
             />
           </div>
-          <div className="formvox-control-group">
+          <div className="formsvox-control-group">
             <label>Form Description</label>
             <textarea
               rows={3}
@@ -72,7 +72,7 @@ export const FormSettings: React.FC<FormSettingsProps> = ({ schema, onUpdateSche
               onChange={(e) => updateGeneral('description', e.target.value)}
             />
           </div>
-          <div className="formvox-control-group">
+          <div className="formsvox-control-group">
             <label>Submit Button Text</label>
             <input
               type="text"
@@ -80,7 +80,7 @@ export const FormSettings: React.FC<FormSettingsProps> = ({ schema, onUpdateSche
               onChange={(e) => updateGeneral('submit_text', e.target.value)}
             />
           </div>
-          <div className="formvox-control-group checkbox">
+          <div className="formsvox-control-group checkbox">
             <label>
               <input
                 type="checkbox"
@@ -94,14 +94,14 @@ export const FormSettings: React.FC<FormSettingsProps> = ({ schema, onUpdateSche
       )}
 
       {activeTab === 'notifications' && (
-        <div className="formvox-tab-content">
+        <div className="formsvox-tab-content">
           <button type="button" className="button" onClick={addNotification}>
             + Add Notification Email
           </button>
           {schema.notifications.map((n, idx) => (
-            <div key={n.id} className="formvox-card">
+            <div key={n.id} className="formsvox-card">
               <h4>{n.name}</h4>
-              <div className="formvox-control-group">
+              <div className="formsvox-control-group">
                 <label>Send To Email</label>
                 <input
                   type="text"
@@ -113,7 +113,7 @@ export const FormSettings: React.FC<FormSettingsProps> = ({ schema, onUpdateSche
                   }}
                 />
               </div>
-              <div className="formvox-control-group">
+              <div className="formsvox-control-group">
                 <label>Subject</label>
                 <input
                   type="text"
@@ -125,7 +125,7 @@ export const FormSettings: React.FC<FormSettingsProps> = ({ schema, onUpdateSche
                   }}
                 />
               </div>
-              <div className="formvox-control-group">
+              <div className="formsvox-control-group">
                 <label>Email Body (Smart Tags Supported: {'{all_fields}'}, {'{entry_id}'}, {'{field_id="id"}'})</label>
                 <textarea
                   rows={4}
@@ -143,11 +143,11 @@ export const FormSettings: React.FC<FormSettingsProps> = ({ schema, onUpdateSche
       )}
 
       {activeTab === 'confirmations' && (
-        <div className="formvox-tab-content">
+        <div className="formsvox-tab-content">
           {schema.confirmations.map((c, idx) => (
-            <div key={c.id || idx} className="formvox-card">
+            <div key={c.id || idx} className="formsvox-card">
               <h4>Confirmation</h4>
-              <div className="formvox-control-group">
+              <div className="formsvox-control-group">
                 <label>Confirmation Type</label>
                 <select
                   value={c.type}
@@ -162,7 +162,7 @@ export const FormSettings: React.FC<FormSettingsProps> = ({ schema, onUpdateSche
                 </select>
               </div>
               {c.type === 'message' && (
-                <div className="formvox-control-group">
+                <div className="formsvox-control-group">
                   <label>Message Content</label>
                   <textarea
                     rows={3}

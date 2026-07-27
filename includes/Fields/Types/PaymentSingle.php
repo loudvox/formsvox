@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class PaymentSingle extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Single Item Payment', 'formvox' );
+		return __( 'Single Item Payment', 'formsvox' );
 	}
 
 	public function get_category() {
@@ -29,12 +29,12 @@ class PaymentSingle extends BaseField {
 		$field_id = esc_attr( $field['id'] );
 		$label    = esc_html( $field['label'] );
 		$price    = isset( $field['price'] ) ? number_format( (float) $field['price'], 2 ) : '10.00';
-		$desc     = ! empty( $field['description'] ) ? '<span class="formvox-field-description">' . esc_html( $field['description'] ) . '</span>' : '';
+		$desc     = ! empty( $field['description'] ) ? '<span class="formsvox-field-description">' . esc_html( $field['description'] ) . '</span>' : '';
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-payment-single %s" data-field-id="%s" data-price="%s">
-				<label class="formvox-field-label">%s — $<span class="formvox-price-display">%s</span></label>
-				<input type="hidden" name="formvox_fields[%s]" value="%s" />
+			'<div class="formsvox-field formsvox-field-payment-single %s" data-field-id="%s" data-price="%s">
+				<label class="formsvox-field-label">%s — $<span class="formsvox-price-display">%s</span></label>
+				<input type="hidden" name="formsvox_fields[%s]" value="%s" />
 				%s
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),

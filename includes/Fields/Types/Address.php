@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class Address extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Address', 'formvox' );
+		return __( 'Address', 'formsvox' );
 	}
 
 	public function sanitize( $value, $field ) {
@@ -44,35 +44,35 @@ class Address extends BaseField {
 		$cn  = esc_attr( isset( $val['country'] ) ? $val['country'] : '' );
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-address %s" data-field-id="%s">
-				<label class="formvox-field-label">%s %s</label>
-				<div class="formvox-field-group">
-					<div class="formvox-mb-2">
-						<label for="formvox-input-%s-a1" class="formvox-sub-label">%s</label>
-						<input type="text" id="formvox-input-%s-a1" name="formvox_fields[%s][address1]" value="%s" class="formvox-input" />
+			'<div class="formsvox-field formsvox-field-address %s" data-field-id="%s">
+				<label class="formsvox-field-label">%s %s</label>
+				<div class="formsvox-field-group">
+					<div class="formsvox-mb-2">
+						<label for="formsvox-input-%s-a1" class="formsvox-sub-label">%s</label>
+						<input type="text" id="formsvox-input-%s-a1" name="formsvox_fields[%s][address1]" value="%s" class="formsvox-input" />
 					</div>
-					<div class="formvox-mb-2">
-						<label for="formvox-input-%s-a2" class="formvox-sub-label">%s</label>
-						<input type="text" id="formvox-input-%s-a2" name="formvox_fields[%s][address2]" value="%s" class="formvox-input" />
+					<div class="formsvox-mb-2">
+						<label for="formsvox-input-%s-a2" class="formsvox-sub-label">%s</label>
+						<input type="text" id="formsvox-input-%s-a2" name="formsvox_fields[%s][address2]" value="%s" class="formsvox-input" />
 					</div>
-					<div class="formvox-grid-2 formvox-mb-2">
+					<div class="formsvox-grid-2 formsvox-mb-2">
 						<div>
-							<label for="formvox-input-%s-ct" class="formvox-sub-label">%s</label>
-							<input type="text" id="formvox-input-%s-ct" name="formvox_fields[%s][city]" value="%s" class="formvox-input" />
+							<label for="formsvox-input-%s-ct" class="formsvox-sub-label">%s</label>
+							<input type="text" id="formsvox-input-%s-ct" name="formsvox_fields[%s][city]" value="%s" class="formsvox-input" />
 						</div>
 						<div>
-							<label for="formvox-input-%s-st" class="formvox-sub-label">%s</label>
-							<input type="text" id="formvox-input-%s-st" name="formvox_fields[%s][state]" value="%s" class="formvox-input" />
+							<label for="formsvox-input-%s-st" class="formsvox-sub-label">%s</label>
+							<input type="text" id="formsvox-input-%s-st" name="formsvox_fields[%s][state]" value="%s" class="formsvox-input" />
 						</div>
 					</div>
-					<div class="formvox-grid-2">
+					<div class="formsvox-grid-2">
 						<div>
-							<label for="formvox-input-%s-zp" class="formvox-sub-label">%s</label>
-							<input type="text" id="formvox-input-%s-zp" name="formvox_fields[%s][postal]" value="%s" class="formvox-input" />
+							<label for="formsvox-input-%s-zp" class="formsvox-sub-label">%s</label>
+							<input type="text" id="formsvox-input-%s-zp" name="formsvox_fields[%s][postal]" value="%s" class="formsvox-input" />
 						</div>
 						<div>
-							<label for="formvox-input-%s-cn" class="formvox-sub-label">%s</label>
-							<input type="text" id="formvox-input-%s-cn" name="formvox_fields[%s][country]" value="%s" class="formvox-input" />
+							<label for="formsvox-input-%s-cn" class="formsvox-sub-label">%s</label>
+							<input type="text" id="formsvox-input-%s-cn" name="formsvox_fields[%s][country]" value="%s" class="formsvox-input" />
 						</div>
 					</div>
 				</div>
@@ -80,13 +80,13 @@ class Address extends BaseField {
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,
 			$label,
-			! empty( $field['required'] ) ? '<span class="formvox-required-asterisk">*</span>' : '',
-			$field_id, __( 'Street Address', 'formvox' ), $field_id, $field_id, $a1,
-			$field_id, __( 'Address Line 2', 'formvox' ), $field_id, $field_id, $a2,
-			$field_id, __( 'City', 'formvox' ), $field_id, $field_id, $ct,
-			$field_id, __( 'State / Province', 'formvox' ), $field_id, $field_id, $st,
-			$field_id, __( 'Postal / Zip Code', 'formvox' ), $field_id, $field_id, $zp,
-			$field_id, __( 'Country', 'formvox' ), $field_id, $field_id, $cn
+			! empty( $field['required'] ) ? '<span class="formsvox-required-asterisk">*</span>' : '',
+			$field_id, __( 'Street Address', 'formsvox' ), $field_id, $field_id, $a1,
+			$field_id, __( 'Address Line 2', 'formsvox' ), $field_id, $field_id, $a2,
+			$field_id, __( 'City', 'formsvox' ), $field_id, $field_id, $ct,
+			$field_id, __( 'State / Province', 'formsvox' ), $field_id, $field_id, $st,
+			$field_id, __( 'Postal / Zip Code', 'formsvox' ), $field_id, $field_id, $zp,
+			$field_id, __( 'Country', 'formsvox' ), $field_id, $field_id, $cn
 		);
 	}
 }

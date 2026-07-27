@@ -1,6 +1,6 @@
 <?php
 
-namespace FormVox\Blocks;
+namespace FormsVox\Blocks;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -25,7 +25,7 @@ class GutenbergBlock {
 			return;
 		}
 
-		register_block_type( 'formvox/form-block', array(
+		register_block_type( 'formsvox/form-block', array(
 			'render_callback' => array( $this, 'render_block' ),
 			'attributes'      => array(
 				'formId' => array(
@@ -42,6 +42,6 @@ class GutenbergBlock {
 			return '';
 		}
 
-		return \FormVox\Frontend\Renderer::get_instance()->render_form( $form_id );
+		return \FormsVox\Frontend\Renderer::get_instance()->render_form( $form_id );
 	}
 }

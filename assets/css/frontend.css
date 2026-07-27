@@ -1,33 +1,33 @@
-.formvox-form-wrapper {
+.formsvox-form-wrapper {
   max-width: 680px;
   margin: 0 auto;
   font-family: inherit;
 }
 
-.formvox-form-title {
+.formsvox-form-title {
   font-size: 24px;
   margin-bottom: 8px;
 }
 
-.formvox-form-desc {
+.formsvox-form-desc {
   font-size: 14px;
   color: #666;
   margin-bottom: 20px;
 }
 
-.formvox-field {
+.formsvox-field {
   margin-bottom: 18px;
 }
 
-.formvox-field-label {
+.formsvox-field-label {
   display: block;
   font-weight: 600;
   margin-bottom: 6px;
 }
 
-.formvox-input,
-.formvox-textarea,
-.formvox-select {
+.formsvox-input,
+.formsvox-textarea,
+.formsvox-select {
   width: 100%;
   padding: 10px 14px;
   border: 1px solid #ccc;
@@ -36,21 +36,21 @@
   box-sizing: border-box;
 }
 
-.formvox-input:focus,
-.formvox-textarea:focus,
-.formvox-select:focus {
+.formsvox-input:focus,
+.formsvox-textarea:focus,
+.formsvox-select:focus {
   border-color: #2271b1;
   outline: none;
   box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.2);
 }
 
-.formvox-grid-2 {
+.formsvox-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
-.formvox-submit-btn {
+.formsvox-submit-btn {
   background: #2271b1;
   color: #ffffff;
   padding: 12px 28px;
@@ -62,23 +62,23 @@
   transition: background 0.2s ease;
 }
 
-.formvox-submit-btn:hover {
+.formsvox-submit-btn:hover {
   background: #135e96;
 }
 
-.formvox-response-message {
+.formsvox-response-message {
   margin-top: 16px;
   padding: 12px;
   border-radius: 6px;
   font-weight: 500;
 }
 
-.formvox-response-message.success {
+.formsvox-response-message.success {
   background: #d4edda;
   color: #155724;
 }
 
-.formvox-response-message.error {
+.formsvox-response-message.error {
   background: #f8d7da;
   color: #721c24;
 }

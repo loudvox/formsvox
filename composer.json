@@ -1,12 +1,12 @@
 {
-    "name": "formvox/formvox",
-    "description": "FormVox - High performance, accessible WordPress Form Builder plugin.",
+    "name": "formsvox/formsvox",
+    "description": "FormsVox - High performance, accessible WordPress Form Builder plugin.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "authors": [
         {
-            "name": "FormVox Team",
-            "email": "support@formvox.io"
+            "name": "FormsVox Team",
+            "email": "support@formsvox.io"
         }
     ],
     "require": {
@@ -19,12 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "FormVox\\": "includes/"
+            "FormsVox\\": "includes/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "FormVox\\Tests\\": "tests/phpunit/"
+            "FormsVox\\Tests\\": "tests/phpunit/"
         }
     },
     "scripts": {

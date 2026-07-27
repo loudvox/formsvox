@@ -1,6 +1,6 @@
 <?php
 
-namespace FormVox\DB;
+namespace FormsVox\DB;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -20,7 +20,7 @@ class Migrator {
 	/**
 	 * Database version option key.
 	 */
-	const DB_VERSION_OPTION = 'formvox_db_version';
+	const DB_VERSION_OPTION = 'formsvox_db_version';
 
 	/**
 	 * Current Database schema version.
@@ -59,9 +59,9 @@ class Migrator {
 
 		$charset_collate = $wpdb->get_charset_collate();
 
-		$table_forms      = $wpdb->prefix . 'formvox_forms';
-		$table_entries    = $wpdb->prefix . 'formvox_entries';
-		$table_entry_meta = $wpdb->prefix . 'formvox_entry_meta';
+		$table_forms      = $wpdb->prefix . 'formsvox_forms';
+		$table_entries    = $wpdb->prefix . 'formsvox_entries';
+		$table_entry_meta = $wpdb->prefix . 'formsvox_entry_meta';
 
 		$sql_forms = "CREATE TABLE {$table_forms} (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,

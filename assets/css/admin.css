@@ -1,9 +1,9 @@
-.formvox-admin-wrap {
+.formsvox-admin-wrap {
   margin-top: 20px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
-.formvox-main-nav {
+.formsvox-main-nav {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -14,21 +14,21 @@
   margin-bottom: 20px;
 }
 
-.formvox-brand {
+.formsvox-brand {
   margin: 0;
   margin-right: 20px;
   font-size: 20px;
   color: #2271b1;
 }
 
-.formvox-builder-container {
+.formsvox-builder-container {
   background: #fff;
   border: 1px solid #c3c4c7;
   border-radius: 4px;
   overflow: hidden;
 }
 
-.formvox-builder-header {
+.formsvox-builder-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -37,7 +37,7 @@
   border-bottom: 1px solid #c3c4c7;
 }
 
-.formvox-title-input {
+.formsvox-title-input {
   font-size: 18px;
   font-weight: 600;
   border: 1px solid #8c8f94;
@@ -45,25 +45,25 @@
   padding: 6px 12px;
 }
 
-.formvox-builder-body {
+.formsvox-builder-body {
   display: flex;
   min-height: 600px;
 }
 
-.formvox-palette {
+.formsvox-palette {
   width: 260px;
   background: #f6f7f7;
   border-right: 1px solid #c3c4c7;
   padding: 16px;
 }
 
-.formvox-palette-grid {
+.formsvox-palette-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 8px;
 }
 
-.formvox-palette-btn {
+.formsvox-palette-btn {
   text-align: left;
   background: #fff;
   border: 1px solid #c3c4c7;
@@ -74,19 +74,19 @@
   transition: all 0.15s ease;
 }
 
-.formvox-palette-btn:hover {
+.formsvox-palette-btn:hover {
   border-color: #2271b1;
   color: #2271b1;
   background: #f0f6fc;
 }
 
-.formvox-canvas {
+.formsvox-canvas {
   flex: 1;
   padding: 24px;
   background: #ffffff;
 }
 
-.formvox-canvas-item {
+.formsvox-canvas-item {
   padding: 16px;
   border: 2px dashed #c3c4c7;
   border-radius: 6px;
@@ -95,75 +95,75 @@
   transition: all 0.15s ease;
 }
 
-.formvox-canvas-item:hover,
-.formvox-canvas-item.selected {
+.formsvox-canvas-item:hover,
+.formsvox-canvas-item.selected {
   border-color: #2271b1;
   background: #f0f6fc;
 }
 
-.formvox-sidebar {
+.formsvox-sidebar {
   width: 320px;
   background: #f6f7f7;
   border-left: 1px solid #c3c4c7;
   padding: 16px;
 }
 
-.formvox-control-group {
+.formsvox-control-group {
   margin-bottom: 16px;
 }
 
-.formvox-control-group label {
+.formsvox-control-group label {
   display: block;
   font-weight: 600;
   margin-bottom: 4px;
 }
 
-.formvox-control-group input[type="text"],
-.formvox-control-group textarea,
-.formvox-control-group select {
+.formsvox-control-group input[type="text"],
+.formsvox-control-group textarea,
+.formsvox-control-group select {
   width: 100%;
   padding: 6px 10px;
   border: 1px solid #8c8f94;
   border-radius: 4px;
 }
 
-.formvox-grid-2 {
+.formsvox-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
-.formvox-mb-2 {
+.formsvox-mb-2 {
   margin-bottom: 8px;
 }
 
-.formvox-required-asterisk {
+.formsvox-required-asterisk {
   color: #d63638;
 }
 
-.formvox-star-rating label {
+.formsvox-star-rating label {
   font-size: 24px;
   color: #f0ad4e;
   cursor: pointer;
 }
 
-.formvox-likert-table {
+.formsvox-likert-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.formvox-likert-table th,
-.formvox-likert-table td {
+.formsvox-likert-table th,
+.formsvox-likert-table td {
   border: 1px solid #c3c4c7;
   padding: 8px;
 }
 
-.formvox-nps-scale {
+.formsvox-nps-scale {
   display: flex;
   gap: 4px;
 }
 
-.formvox-nps-item label {
+.formsvox-nps-item label {
   display: inline-block;
   padding: 8px 12px;
   border: 1px solid #c3c4c7;

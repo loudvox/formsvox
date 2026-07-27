@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class Checkboxes extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Checkboxes', 'formvox' );
+		return __( 'Checkboxes', 'formsvox' );
 	}
 
 	public function sanitize( $value, $field ) {
@@ -35,11 +35,11 @@ class Checkboxes extends BaseField {
 			$opt_val   = is_array( $opt ) ? $opt['value'] : $opt;
 			$opt_label = is_array( $opt ) ? $opt['label'] : $opt;
 			$checked   = in_array( $opt_val, $vals, true ) ? 'checked' : '';
-			$opt_id    = "formvox-input-{$field_id}-{$idx}";
+			$opt_id    = "formsvox-input-{$field_id}-{$idx}";
 
 			$opts_html .= sprintf(
-				'<div class="formvox-choice-item">
-					<input type="checkbox" id="%s" name="formvox_fields[%s][]" value="%s" %s class="formvox-checkbox" />
+				'<div class="formsvox-choice-item">
+					<input type="checkbox" id="%s" name="formsvox_fields[%s][]" value="%s" %s class="formsvox-checkbox" />
 					<label for="%s">%s</label>
 				</div>',
 				esc_attr( $opt_id ),
@@ -52,14 +52,14 @@ class Checkboxes extends BaseField {
 		}
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-checkbox %s" data-field-id="%s">
-				<fieldset><legend class="formvox-field-label">%s %s</legend>
-				<div class="formvox-choice-list">%s</div></fieldset>
+			'<div class="formsvox-field formsvox-field-checkbox %s" data-field-id="%s">
+				<fieldset><legend class="formsvox-field-label">%s %s</legend>
+				<div class="formsvox-choice-list">%s</div></fieldset>
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,
 			$label,
-			! empty( $field['required'] ) ? '<span class="formvox-required-asterisk">*</span>' : '',
+			! empty( $field['required'] ) ? '<span class="formsvox-required-asterisk">*</span>' : '',
 			$opts_html
 		);
 	}

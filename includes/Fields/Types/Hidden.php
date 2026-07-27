@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class Hidden extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Hidden Field', 'formvox' );
+		return __( 'Hidden Field', 'formsvox' );
 	}
 
 	public function render( $field, $value = null, $form = array() ) {
@@ -22,7 +22,7 @@ class Hidden extends BaseField {
 		$val      = esc_attr( is_null( $value ) ? ( isset( $field['default_val'] ) ? $field['default_val'] : '' ) : $value );
 
 		return sprintf(
-			'<input type="hidden" id="formvox-input-%s" name="formvox_fields[%s]" value="%s" data-field-id="%s" />',
+			'<input type="hidden" id="formsvox-input-%s" name="formsvox_fields[%s]" value="%s" data-field-id="%s" />',
 			$field_id,
 			$field_id,
 			$val,

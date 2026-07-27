@@ -15,7 +15,7 @@ export const FieldSettings: React.FC<FieldSettingsProps> = ({
   onDeleteField,
 }) => {
   if (!field) {
-    return <div className="formvox-settings-empty">Select a field on the canvas to configure its properties.</div>;
+    return <div className="formsvox-settings-empty">Select a field on the canvas to configure its properties.</div>;
   }
 
   const handleLogicToggle = (enabled: boolean) => {
@@ -41,19 +41,19 @@ export const FieldSettings: React.FC<FieldSettingsProps> = ({
   };
 
   return (
-    <div className="formvox-field-settings">
-      <div className="formvox-settings-header">
+    <div className="formsvox-field-settings">
+      <div className="formsvox-settings-header">
         <h3>Field Settings ({field.type})</h3>
         <button
           type="button"
-          className="formvox-btn-delete"
+          className="formsvox-btn-delete"
           onClick={() => onDeleteField(field.id)}
         >
           Delete Field
         </button>
       </div>
 
-      <div className="formvox-control-group">
+      <div className="formsvox-control-group">
         <label>Field Label</label>
         <input
           type="text"
@@ -62,7 +62,7 @@ export const FieldSettings: React.FC<FieldSettingsProps> = ({
         />
       </div>
 
-      <div className="formvox-control-group">
+      <div className="formsvox-control-group">
         <label>Description / Help Text</label>
         <input
           type="text"
@@ -71,7 +71,7 @@ export const FieldSettings: React.FC<FieldSettingsProps> = ({
         />
       </div>
 
-      <div className="formvox-control-group">
+      <div className="formsvox-control-group">
         <label>Placeholder Text</label>
         <input
           type="text"
@@ -80,7 +80,7 @@ export const FieldSettings: React.FC<FieldSettingsProps> = ({
         />
       </div>
 
-      <div className="formvox-control-group checkbox">
+      <div className="formsvox-control-group checkbox">
         <label>
           <input
             type="checkbox"
@@ -91,7 +91,7 @@ export const FieldSettings: React.FC<FieldSettingsProps> = ({
         </label>
       </div>
 
-      <div className="formvox-control-group">
+      <div className="formsvox-control-group">
         <label>Custom CSS Class</label>
         <input
           type="text"
@@ -101,7 +101,7 @@ export const FieldSettings: React.FC<FieldSettingsProps> = ({
       </div>
 
       {['select', 'radio', 'checkbox'].includes(field.type) && (
-        <div className="formvox-control-group">
+        <div className="formsvox-control-group">
           <label>Options (one per line)</label>
           <textarea
             rows={4}
@@ -117,7 +117,7 @@ export const FieldSettings: React.FC<FieldSettingsProps> = ({
 
       <hr />
       <h4>Conditional Logic (Free Feature)</h4>
-      <div className="formvox-control-group checkbox">
+      <div className="formsvox-control-group checkbox">
         <label>
           <input
             type="checkbox"
@@ -129,12 +129,12 @@ export const FieldSettings: React.FC<FieldSettingsProps> = ({
       </div>
 
       {field.conditional_logic?.enabled && (
-        <div className="formvox-logic-rules">
+        <div className="formsvox-logic-rules">
           <button type="button" className="button" onClick={addRule}>
             + Add Rule
           </button>
           {field.conditional_logic.rules.map((rule, idx) => (
-            <div key={idx} className="formvox-logic-rule-row">
+            <div key={idx} className="formsvox-logic-rule-row">
               <span>If field</span>
               <select
                 value={rule.field_id}

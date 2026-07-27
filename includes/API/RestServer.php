@@ -1,23 +1,23 @@
 <?php
 
-namespace FormVox\API;
+namespace FormsVox\API;
 
-use FormVox\DB\FormModel;
-use FormVox\DB\EntryModel;
-use FormVox\AntiSpam\Honeypot;
-use FormVox\Notifications\EmailEngine;
-use FormVox\Integrations\IntegrationManager;
+use FormsVox\DB\FormModel;
+use FormsVox\DB\EntryModel;
+use FormsVox\AntiSpam\Honeypot;
+use FormsVox\Notifications\EmailEngine;
+use FormsVox\Integrations\IntegrationManager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * FormVox REST API Controller.
+ * FormsVox REST API Controller.
  */
 class RestServer {
 	private static $instance = null;
-	const NAMESPACE = 'formvox/v1';
+	const NAMESPACE = 'formsvox/v1';
 
 	public static function get_instance() {
 		if ( is_null( self::$instance ) ) {
@@ -145,7 +145,7 @@ class RestServer {
 		$id   = $request->get_param( 'id' );
 		$form = FormModel::get( $id );
 		if ( ! $form ) {
-			return new \WP_Error( 'not_found', __( 'Form not found.', 'formvox' ), array( 'status' => 404 ) );
+			return new \WP_Error( 'not_found', __( 'Form not found.', 'formsvox' ), array( 'status' => 404 ) );
 		}
 		return rest_ensure_response( $form );
 	}
@@ -155,7 +155,7 @@ class RestServer {
 		$schema = $request->get_param( 'schema' );
 
 		if ( empty( $title ) ) {
-			$title = __( 'Untitled Form', 'formvox' );
+			$title = __( 'Untitled Form', 'formsvox' );
 		}
 
 		$id = FormModel::create( $title, is_array( $schema ) ? $schema : array() );
@@ -183,20 +183,20 @@ class RestServer {
 		$form    = FormModel::get( $form_id );
 
 		if ( ! $form ) {
-			return new \WP_Error( 'form_not_found', __( 'Form not found.', 'formvox' ), array( 'status' => 404 ) );
+			return new \WP_Error( 'form_not_found', __( 'Form not found.', 'formsvox' ), array( 'status' => 404 ) );
 		}
 
 		// Enforce form published status
 		if ( isset( $form['status'] ) && 'publish' !== $form['status'] ) {
-			return new \WP_Error( 'form_not_published', __( 'This form is not active or published.', 'formvox' ), array( 'status' => 403 ) );
+			return new \WP_Error( 'form_not_published', __( 'This form is not active or published.', 'formsvox' ), array( 'status' => 403 ) );
 		}
 
 		// IP-based rate limiting (Max 10 submissions per 60 seconds per IP/form)
 		$ip            = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '127.0.0.1';
-		$transient_key = 'formvox_rate_' . md5( $ip . '_' . $form_id );
+		$transient_key = 'formsvox_rate_' . md5( $ip . '_' . $form_id );
 		$rate_count    = (int) get_transient( $transient_key );
 		if ( $rate_count >= 10 ) {
-			return new \WP_Error( 'rate_limit_exceeded', __( 'Too many submissions. Please wait a minute and try again.', 'formvox' ), array( 'status' => 429 ) );
+			return new \WP_Error( 'rate_limit_exceeded', __( 'Too many submissions. Please wait a minute and try again.', 'formsvox' ), array( 'status' => 429 ) );
 		}
 		set_transient( $transient_key, $rate_count + 1, 60 );
 
@@ -205,20 +205,20 @@ class RestServer {
 		// Anti-Spam Honeypot & Time-Trap Check
 		$honeypot = Honeypot::get_instance();
 		if ( ! $honeypot->verify( $params ) ) {
-			return new \WP_Error( 'spam_detected', __( 'Spam detection triggered.', 'formvox' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'spam_detected', __( 'Spam detection triggered.', 'formsvox' ), array( 'status' => 400 ) );
 		}
 
 		// Server-Side CAPTCHA Verification (reCAPTCHA, Turnstile, hCaptcha)
-		$captcha_result = \FormVox\AntiSpam\CaptchaVerifier::verify( $params );
+		$captcha_result = \FormsVox\AntiSpam\CaptchaVerifier::verify( $params );
 		if ( is_wp_error( $captcha_result ) ) {
 			return $captcha_result;
 		}
 
-		$raw_fields = isset( $params['formvox_fields'] ) && is_array( $params['formvox_fields'] ) ? $params['formvox_fields'] : array();
+		$raw_fields = isset( $params['formsvox_fields'] ) && is_array( $params['formsvox_fields'] ) ? $params['formsvox_fields'] : array();
 		$schema     = isset( $form['schema'] ) ? $form['schema'] : array();
 		$form_fields = isset( $schema['fields'] ) && is_array( $schema['fields'] ) ? $schema['fields'] : array();
 
-		$registry         = \FormVox\Fields\FieldRegistry::get_instance();
+		$registry         = \FormsVox\Fields\FieldRegistry::get_instance();
 		$sanitized_fields = array();
 		$errors           = array();
 
@@ -233,7 +233,7 @@ class RestServer {
 			}
 
 			// Check conditional logic visibility for this field
-			if ( ! empty( $field_config['conditional_logic'] ) && ! \FormVox\Logic\Evaluator::evaluate( $field_config['conditional_logic'], $raw_fields ) ) {
+			if ( ! empty( $field_config['conditional_logic'] ) && ! \FormsVox\Logic\Evaluator::evaluate( $field_config['conditional_logic'], $raw_fields ) ) {
 				continue; // Skip hidden conditional fields
 			}
 
@@ -252,7 +252,7 @@ class RestServer {
 		if ( ! empty( $errors ) ) {
 			return new \WP_Error(
 				'validation_failed',
-				__( 'Validation failed for one or more fields.', 'formvox' ),
+				__( 'Validation failed for one or more fields.', 'formsvox' ),
 				array(
 					'status' => 400,
 					'errors' => $errors,
@@ -264,13 +264,13 @@ class RestServer {
 		$entry_id = EntryModel::create( $form_id, $sanitized_fields );
 
 		/**
-		 * Action Hook: formvox_process_entry
+		 * Action Hook: formsvox_process_entry
 		 *
 		 * @param int   $entry_id Entry ID.
 		 * @param array $form     Form row array.
 		 * @param array $fields_data Submitted fields data.
 		 */
-		do_action( 'formvox_process_entry', $entry_id, $form, $sanitized_fields );
+		do_action( 'formsvox_process_entry', $entry_id, $form, $sanitized_fields );
 
 		// Process Email Notifications & Integrations
 		EmailEngine::get_instance()->send_notifications( $form, $entry_id, $sanitized_fields );
@@ -282,7 +282,7 @@ class RestServer {
 		$valid_confirmations = array();
 
 		foreach ( $all_confirmations as $conf ) {
-			if ( ! empty( $conf['conditional_logic'] ) && ! \FormVox\Logic\Evaluator::evaluate( $conf['conditional_logic'], $sanitized_fields ) ) {
+			if ( ! empty( $conf['conditional_logic'] ) && ! \FormsVox\Logic\Evaluator::evaluate( $conf['conditional_logic'], $sanitized_fields ) ) {
 				continue;
 			}
 			$valid_confirmations[] = $conf;
@@ -291,7 +291,7 @@ class RestServer {
 		if ( empty( $valid_confirmations ) ) {
 			$valid_confirmations[] = array(
 				'type'    => 'message',
-				'message' => __( 'Thank you! Your submission has been received.', 'formvox' ),
+				'message' => __( 'Thank you! Your submission has been received.', 'formsvox' ),
 			);
 		}
 
@@ -317,7 +317,7 @@ class RestServer {
 		$id    = $request->get_param( 'id' );
 		$entry = EntryModel::get( $id );
 		if ( ! $entry ) {
-			return new \WP_Error( 'not_found', __( 'Entry not found.', 'formvox' ), array( 'status' => 404 ) );
+			return new \WP_Error( 'not_found', __( 'Entry not found.', 'formsvox' ), array( 'status' => 404 ) );
 		}
 		return rest_ensure_response( $entry );
 	}
@@ -341,7 +341,7 @@ class RestServer {
 		$items   = $query['items'];
 
 		header( 'Content-Type: text/csv' );
-		header( 'Content-Disposition: attachment; filename="formvox-entries-' . $form_id . '.csv"' );
+		header( 'Content-Disposition: attachment; filename="formsvox-entries-' . $form_id . '.csv"' );
 
 		$output = fopen( 'php://output', 'w' );
 		if ( ! empty( $items ) ) {
@@ -394,7 +394,7 @@ class RestServer {
 			'mailchimp_api_key'     => '',
 			'delete_on_uninstall'   => false,
 		);
-		$settings = wp_parse_args( get_option( 'formvox_settings', array() ), $defaults );
+		$settings = wp_parse_args( get_option( 'formsvox_settings', array() ), $defaults );
 		return rest_ensure_response( $settings );
 	}
 
@@ -424,18 +424,18 @@ class RestServer {
 			$settings['delete_on_uninstall'] = rest_sanitize_boolean( $params['delete_on_uninstall'] );
 		}
 
-		update_option( 'formvox_settings', $settings );
+		update_option( 'formsvox_settings', $settings );
 		return rest_ensure_response( array( 'success' => true, 'settings' => $settings ) );
 	}
 
 	public function get_templates( \WP_REST_Request $request ) {
-		$templates = \FormVox\Templates\TemplateManager::get_all();
+		$templates = \FormsVox\Templates\TemplateManager::get_all();
 		return rest_ensure_response( $templates );
 	}
 
 	public function import_wpforms( \WP_REST_Request $request ) {
 		$json_str = $request->get_param( 'json' );
-		$imported = \FormVox\Importers\WPFormsImporter::import( $json_str );
+		$imported = \FormsVox\Importers\WPFormsImporter::import( $json_str );
 		return rest_ensure_response( $imported );
 	}
 }

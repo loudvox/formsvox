@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class PaymentMultiple extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Multiple Items Payment', 'formvox' );
+		return __( 'Multiple Items Payment', 'formsvox' );
 	}
 
 	public function get_category() {
@@ -37,12 +37,12 @@ class PaymentMultiple extends BaseField {
 		foreach ( $items as $idx => $item ) {
 			$item_lbl = esc_html( $item['label'] );
 			$item_prc = number_format( (float) $item['price'], 2 );
-			$opt_id   = "formvox-pay-{$field_id}-{$idx}";
+			$opt_id   = "formsvox-pay-{$field_id}-{$idx}";
 			$checked  = checked( $value, $item_lbl, false );
 
 			$opts_html .= sprintf(
-				'<div class="formvox-choice-item">
-					<input type="radio" id="%s" name="formvox_fields[%s]" value="%s" data-price="%s" %s class="formvox-payment-radio" />
+				'<div class="formsvox-choice-item">
+					<input type="radio" id="%s" name="formsvox_fields[%s]" value="%s" data-price="%s" %s class="formsvox-payment-radio" />
 					<label for="%s">%s ($%s)</label>
 				</div>',
 				esc_attr( $opt_id ),
@@ -57,14 +57,14 @@ class PaymentMultiple extends BaseField {
 		}
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-payment-multiple %s" data-field-id="%s">
-				<fieldset><legend class="formvox-field-label">%s %s</legend>
-				<div class="formvox-choice-list">%s</div></fieldset>
+			'<div class="formsvox-field formsvox-field-payment-multiple %s" data-field-id="%s">
+				<fieldset><legend class="formsvox-field-label">%s %s</legend>
+				<div class="formsvox-choice-list">%s</div></fieldset>
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,
 			$label,
-			! empty( $field['required'] ) ? '<span class="formvox-required-asterisk">*</span>' : '',
+			! empty( $field['required'] ) ? '<span class="formsvox-required-asterisk">*</span>' : '',
 			$opts_html
 		);
 	}

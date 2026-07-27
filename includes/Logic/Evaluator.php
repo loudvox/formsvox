@@ -1,6 +1,6 @@
 <?php
 
-namespace FormVox\Logic;
+namespace FormsVox\Logic;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

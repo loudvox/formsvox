@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class Rating extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Star Rating', 'formvox' );
+		return __( 'Star Rating', 'formsvox' );
 	}
 
 	public function get_category() {
@@ -34,9 +34,9 @@ class Rating extends BaseField {
 		$stars_html = '';
 		for ( $i = 1; $i <= $max; $i++ ) {
 			$checked = checked( $val, $i, false );
-			$opt_id  = "formvox-rating-{$field_id}-{$i}";
+			$opt_id  = "formsvox-rating-{$field_id}-{$i}";
 			$stars_html .= sprintf(
-				'<input type="radio" id="%s" name="formvox_fields[%s]" value="%d" %s class="formvox-star-input" />
+				'<input type="radio" id="%s" name="formsvox_fields[%s]" value="%d" %s class="formsvox-star-input" />
 				<label for="%s" title="%d Stars">&#9733;</label>',
 				esc_attr( $opt_id ),
 				$field_id,
@@ -48,14 +48,14 @@ class Rating extends BaseField {
 		}
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-rating %s" data-field-id="%s">
-				<fieldset><legend class="formvox-field-label">%s %s</legend>
-				<div class="formvox-star-rating">%s</div></fieldset>
+			'<div class="formsvox-field formsvox-field-rating %s" data-field-id="%s">
+				<fieldset><legend class="formsvox-field-label">%s %s</legend>
+				<div class="formsvox-star-rating">%s</div></fieldset>
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,
 			$label,
-			! empty( $field['required'] ) ? '<span class="formvox-required-asterisk">*</span>' : '',
+			! empty( $field['required'] ) ? '<span class="formsvox-required-asterisk">*</span>' : '',
 			$stars_html
 		);
 	}

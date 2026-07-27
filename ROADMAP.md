@@ -1,6 +1,6 @@
-# FormVox Product Roadmap
+# FormsVox Product Roadmap
 
-This document outlines the feature expansion phases planned for FormVox Pro and future core releases.
+This document outlines the feature expansion phases planned for FormsVox Pro and future core releases.
 
 ## Phase 2 (Pro Release)
 - **Surveys & Polls UI**: Advanced reporting visualizer (charts, bar graphs, export reports).

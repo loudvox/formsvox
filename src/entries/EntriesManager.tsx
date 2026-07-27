@@ -8,8 +8,8 @@ export const EntriesManager: React.FC = () => {
 
   const fetchEntries = () => {
     setLoading(true);
-    fetch('/wp-json/formvox/v1/entries', {
-      headers: { 'X-WP-Nonce': (window as any).formvoxAdmin?.nonce || '' },
+    fetch('/wp-json/formsvox/v1/entries', {
+      headers: { 'X-WP-Nonce': (window as any).formsvoxAdmin?.nonce || '' },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -25,11 +25,11 @@ export const EntriesManager: React.FC = () => {
   }, []);
 
   const toggleStar = async (id: number, currentStarred: number) => {
-    await fetch(`/wp-json/formvox/v1/entries/${id}/star`, {
+    await fetch(`/wp-json/formsvox/v1/entries/${id}/star`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-WP-Nonce': (window as any).formvoxAdmin?.nonce || '',
+        'X-WP-Nonce': (window as any).formsvoxAdmin?.nonce || '',
       },
       body: JSON.stringify({ starred: currentStarred ? 0 : 1 }),
     });
@@ -38,22 +38,22 @@ export const EntriesManager: React.FC = () => {
 
   const deleteEntry = async (id: number) => {
     if (!confirm('Are you sure you want to delete this entry?')) return;
-    await fetch(`/wp-json/formvox/v1/entries/${id}`, {
+    await fetch(`/wp-json/formsvox/v1/entries/${id}`, {
       method: 'DELETE',
-      headers: { 'X-WP-Nonce': (window as any).formvoxAdmin?.nonce || '' },
+      headers: { 'X-WP-Nonce': (window as any).formsvoxAdmin?.nonce || '' },
     });
     if (selectedEntry?.id === id) setSelectedEntry(null);
     fetchEntries();
   };
 
   return (
-    <div className="formvox-entries-manager">
+    <div className="formsvox-entries-manager">
       <h2>Form Entries</h2>
       {loading ? (
         <p>Loading entries...</p>
       ) : (
-        <div className="formvox-entries-layout">
-          <div className="formvox-entries-table-wrapper">
+        <div className="formsvox-entries-layout">
+          <div className="formsvox-entries-table-wrapper">
             <table className="wp-list-table widefat fixed striped">
               <thead>
                 <tr>
@@ -101,7 +101,7 @@ export const EntriesManager: React.FC = () => {
           </div>
 
           {selectedEntry && (
-            <aside className="formvox-entry-detail-card">
+            <aside className="formsvox-entry-detail-card">
               <h3>Entry #{selectedEntry.id} Details</h3>
               <p>
                 <strong>Date:</strong> {selectedEntry.created_at}

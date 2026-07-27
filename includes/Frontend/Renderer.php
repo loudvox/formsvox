@@ -1,10 +1,10 @@
 <?php
 
-namespace FormVox\Frontend;
+namespace FormsVox\Frontend;
 
-use FormVox\DB\FormModel;
-use FormVox\Fields\FieldRegistry;
-use FormVox\AntiSpam\Honeypot;
+use FormsVox\DB\FormModel;
+use FormsVox\Fields\FieldRegistry;
+use FormsVox\AntiSpam\Honeypot;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -24,35 +24,35 @@ class Renderer {
 	}
 
 	private function __construct() {
-		add_shortcode( 'formvox', array( $this, 'render_shortcode' ) );
+		add_shortcode( 'formsvox', array( $this, 'render_shortcode' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
 	}
 
 	public function enqueue_frontend_assets() {
 		wp_enqueue_style(
-			'formvox-frontend',
-			FORMVOX_URL . 'assets/css/frontend.css',
+			'formsvox-frontend',
+			FORMSVOX_URL . 'assets/css/frontend.css',
 			array(),
-			FORMVOX_VERSION
+			FORMSVOX_VERSION
 		);
 
 		wp_enqueue_script(
-			'formvox-frontend-js',
-			FORMVOX_URL . 'assets/js/frontend.js',
+			'formsvox-frontend-js',
+			FORMSVOX_URL . 'assets/js/frontend.js',
 			array(),
-			FORMVOX_VERSION,
+			FORMSVOX_VERSION,
 			true
 		);
 
-		wp_localize_script( 'formvox-frontend-js', 'formvoxFrontend', array(
-			'restUrl' => esc_url_raw( rest_url( 'formvox/v1' ) ),
+		wp_localize_script( 'formsvox-frontend-js', 'formsvoxFrontend', array(
+			'restUrl' => esc_url_raw( rest_url( 'formsvox/v1' ) ),
 		) );
 	}
 
 	public function render_shortcode( $atts ) {
 		$atts = shortcode_atts( array(
 			'id' => 0,
-		), $atts, 'formvox' );
+		), $atts, 'formsvox' );
 
 		return $this->render_form( intval( $atts['id'] ) );
 	}
@@ -60,7 +60,7 @@ class Renderer {
 	public function render_form( $form_id ) {
 		$form = FormModel::get( $form_id );
 		if ( ! $form ) {
-			return '<p class="formvox-error">' . esc_html__( 'FormVox: Form not found.', 'formvox' ) . '</p>';
+			return '<p class="formsvox-error">' . esc_html__( 'FormsVox: Form not found.', 'formsvox' ) . '</p>';
 		}
 
 		$schema   = isset( $form['schema'] ) ? $form['schema'] : array();
@@ -78,7 +78,7 @@ class Renderer {
 				$rendered = $field_obj->render( $field_config );
 				if ( ! empty( $field_config['conditional_logic'] ) && ! empty( $field_config['conditional_logic']['enabled'] ) ) {
 					$logic_json = esc_attr( wp_json_encode( $field_config['conditional_logic'] ) );
-					$rendered   = preg_replace( '/class="([^"]*formvox-field[^"]*)"/', 'class="$1" data-conditional-logic="' . $logic_json . '"', $rendered, 1 );
+					$rendered   = preg_replace( '/class="([^"]*formsvox-field[^"]*)"/', 'class="$1" data-conditional-logic="' . $logic_json . '"', $rendered, 1 );
 				}
 				$fields_html .= $rendered;
 			}
@@ -87,22 +87,22 @@ class Renderer {
 		// Anti-Spam Fields
 		$honeypot_html = Honeypot::get_instance()->render_fields();
 
-		$ajax_class = ! empty( $settings['ajax_submit'] ) ? 'formvox-ajax-form' : '';
-		$form_title = ! empty( $settings['title'] ) ? '<h2 class="formvox-form-title">' . esc_html( $settings['title'] ) . '</h2>' : '';
-		$form_desc  = ! empty( $settings['description'] ) ? '<p class="formvox-form-desc">' . esc_html( $settings['description'] ) . '</p>' : '';
-		$submit_txt = ! empty( $settings['submit_text'] ) ? esc_attr( $settings['submit_text'] ) : esc_attr__( 'Submit', 'formvox' );
+		$ajax_class = ! empty( $settings['ajax_submit'] ) ? 'formsvox-ajax-form' : '';
+		$form_title = ! empty( $settings['title'] ) ? '<h2 class="formsvox-form-title">' . esc_html( $settings['title'] ) . '</h2>' : '';
+		$form_desc  = ! empty( $settings['description'] ) ? '<p class="formsvox-form-desc">' . esc_html( $settings['description'] ) . '</p>' : '';
+		$submit_txt = ! empty( $settings['submit_text'] ) ? esc_attr( $settings['submit_text'] ) : esc_attr__( 'Submit', 'formsvox' );
 
 		return sprintf(
-			'<div class="formvox-form-wrapper" id="formvox-wrapper-%d">
+			'<div class="formsvox-form-wrapper" id="formsvox-wrapper-%d">
 				%s
 				%s
-				<form id="formvox-form-%d" class="formvox-form %s" action="%s" method="post" enctype="multipart/form-data" data-form-id="%d">
+				<form id="formsvox-form-%d" class="formsvox-form %s" action="%s" method="post" enctype="multipart/form-data" data-form-id="%d">
 					%s
 					%s
-					<div class="formvox-submit-wrap">
-						<button type="submit" class="formvox-submit-btn">%s</button>
+					<div class="formsvox-submit-wrap">
+						<button type="submit" class="formsvox-submit-btn">%s</button>
 					</div>
-					<div class="formvox-response-message" style="display:none;"></div>
+					<div class="formsvox-response-message" style="display:none;"></div>
 				</form>
 			</div>',
 			intval( $form_id ),
@@ -110,7 +110,7 @@ class Renderer {
 			$form_desc,
 			intval( $form_id ),
 			esc_attr( $ajax_class ),
-			esc_url( rest_url( 'formvox/v1/submit/' . $form_id ) ),
+			esc_url( rest_url( 'formsvox/v1/submit/' . $form_id ) ),
 			intval( $form_id ),
 			$honeypot_html,
 			$fields_html,
@@ -120,8 +120,8 @@ class Renderer {
 }
 
 // Global PHP Helper Function
-if ( ! function_exists( 'formvox_display_form' ) ) {
-	function formvox_display_form( $form_id ) {
+if ( ! function_exists( 'formsvox_display_form' ) ) {
+	function formsvox_display_form( $form_id ) {
 		echo Renderer::get_instance()->render_form( $form_id );
 	}
 }

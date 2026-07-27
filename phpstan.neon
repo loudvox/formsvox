@@ -1,7 +1,7 @@
 parameters:
     level: 5
     paths:
-        - formvox.php
+        - formsvox.php
         - includes/
     excludePaths:
         - vendor/

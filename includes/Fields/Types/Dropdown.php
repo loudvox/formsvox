@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class Dropdown extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Dropdown', 'formvox' );
+		return __( 'Dropdown', 'formsvox' );
 	}
 
 	public function render( $field, $value = null, $form = array() ) {
@@ -23,9 +23,9 @@ class Dropdown extends BaseField {
 		$options  = isset( $field['options'] ) && is_array( $field['options'] ) ? $field['options'] : array();
 		$val      = is_null( $value ) ? ( isset( $field['default_val'] ) ? $field['default_val'] : '' ) : $value;
 		$required = ! empty( $field['required'] ) ? 'required aria-required="true"' : '';
-		$desc     = ! empty( $field['description'] ) ? '<span class="formvox-field-description">' . esc_html( $field['description'] ) . '</span>' : '';
+		$desc     = ! empty( $field['description'] ) ? '<span class="formsvox-field-description">' . esc_html( $field['description'] ) . '</span>' : '';
 
-		$opt_html = '<option value="">' . esc_html__( '--- Select ---', 'formvox' ) . '</option>';
+		$opt_html = '<option value="">' . esc_html__( '--- Select ---', 'formsvox' ) . '</option>';
 		foreach ( $options as $opt ) {
 			$opt_val   = is_array( $opt ) ? $opt['value'] : $opt;
 			$opt_label = is_array( $opt ) ? $opt['label'] : $opt;
@@ -34,16 +34,16 @@ class Dropdown extends BaseField {
 		}
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-select %s" data-field-id="%s">
-				<label for="formvox-input-%s" class="formvox-field-label">%s %s</label>
-				<select id="formvox-input-%s" name="formvox_fields[%s]" class="formvox-select" %s>%s</select>
+			'<div class="formsvox-field formsvox-field-select %s" data-field-id="%s">
+				<label for="formsvox-input-%s" class="formsvox-field-label">%s %s</label>
+				<select id="formsvox-input-%s" name="formsvox_fields[%s]" class="formsvox-select" %s>%s</select>
 				%s
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,
 			$field_id,
 			$label,
-			! empty( $field['required'] ) ? '<span class="formvox-required-asterisk">*</span>' : '',
+			! empty( $field['required'] ) ? '<span class="formsvox-required-asterisk">*</span>' : '',
 			$field_id,
 			$field_id,
 			$required,

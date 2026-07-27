@@ -1,7 +1,7 @@
 {
-  "name": "formvox",
+  "name": "formsvox",
   "version": "1.0.0",
-  "description": "FormVox Admin Form Builder & Frontend Scripts",
+  "description": "FormsVox Admin Form Builder & Frontend Scripts",
   "main": "src/index.tsx",
   "scripts": {
     "build": "wp-scripts build",

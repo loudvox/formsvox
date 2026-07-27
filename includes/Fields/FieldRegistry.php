@@ -1,13 +1,13 @@
 <?php
 
-namespace FormVox\Fields;
+namespace FormsVox\Fields;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * Field Registry Class for FormVox.
+ * Field Registry Class for FormsVox.
  */
 class FieldRegistry {
 	private static $instance = null;
@@ -63,11 +63,11 @@ class FieldRegistry {
 		}
 
 		/**
-		 * Filter registered FormVox field types.
+		 * Filter registered FormsVox field types.
 		 *
 		 * @param array $fields Associative array of field_type => BaseField instance.
 		 */
-		$this->fields = apply_filters( 'formvox_field_types', $this->fields );
+		$this->fields = apply_filters( 'formsvox_field_types', $this->fields );
 	}
 
 	public function get_field( $type ) {

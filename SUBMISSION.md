@@ -1,6 +1,6 @@
-# FormVox WordPress.org Submission Guide
+# FormsVox WordPress.org Submission Guide
 
-This document summarizes the exact steps required to submit `formvox.zip` to the WordPress.org plugin review queue.
+This document summarizes the exact steps required to submit `formsvox.zip` to the WordPress.org plugin review queue.
 
 ---
 
@@ -16,7 +16,7 @@ composer install --no-dev --optimize-autoloader
 npm run build
 
 # 3. Create clean zip file excluding developer files
-zip -r formvox.zip . \
+zip -r formsvox.zip . \
   -x "*.git*" \
   -x "*node_modules*" \
   -x "*tests*" \
@@ -33,10 +33,10 @@ zip -r formvox.zip . \
 ## 2. WordPress.org Plugin Review Queue Submission Steps
 
 1. **Log in to WordPress.org**: Go to [https://wordpress.org/plugins/developers/add/](https://wordpress.org/plugins/developers/add/).
-2. **Upload `formvox.zip`**: Select the generated `formvox.zip` file.
-3. **Review Plugin Slug**: Confirm the plugin slug is `formvox`.
+2. **Upload `formsvox.zip`**: Select the generated `formsvox.zip` file.
+3. **Review Plugin Slug**: Confirm the plugin slug is `formsvox`.
 4. **Submit for Review**: Click **Submit Form**. The WordPress.org Plugin Review Team will analyze the plugin source code.
-5. **SVN Repository Access**: Once approved, you will receive an email containing SVN repository write access credentials (`https://plugins.svn.wordpress.org/formvox/`).
+5. **SVN Repository Access**: Once approved, you will receive an email containing SVN repository write access credentials (`https://plugins.svn.wordpress.org/formsvox/`).
 
 ---
 
@@ -45,16 +45,16 @@ zip -r formvox.zip . \
 Once approved:
 1. Checkout the SVN repository:
    ```bash
-   svn co https://plugins.svn.wordpress.org/formvox/ svn-formvox
+   svn co https://plugins.svn.wordpress.org/formsvox/ svn-formsvox
    ```
-2. Copy plugin files to `svn-formvox/trunk/` and assets to `svn-formvox/assets/`.
+2. Copy plugin files to `svn-formsvox/trunk/` and assets to `svn-formsvox/assets/`.
 3. Create the `1.0.0` tag:
    ```bash
-   cp -r svn-formvox/trunk svn-formvox/tags/1.0.0
+   cp -r svn-formsvox/trunk svn-formsvox/tags/1.0.0
    ```
 4. Commit to SVN:
    ```bash
-   cd svn-formvox
+   cd svn-formsvox
    svn add --force trunk/ tags/1.0.0/ assets/
    svn commit -m "Tagging release 1.0.0"
    ```

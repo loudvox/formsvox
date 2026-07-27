@@ -1,4 +1,4 @@
-name: FormVox CI
+name: FormsVox CI
 
 on:
   push:

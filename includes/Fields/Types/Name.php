@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class Name extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Name', 'formvox' );
+		return __( 'Name', 'formsvox' );
 	}
 
 	public function sanitize( $value, $field ) {
@@ -34,30 +34,30 @@ class Name extends BaseField {
 		$last     = esc_attr( isset( $value['last'] ) ? $value['last'] : '' );
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-name %s" data-field-id="%s">
-				<label class="formvox-field-label">%s %s</label>
-				<div class="formvox-field-group formvox-grid-2">
+			'<div class="formsvox-field formsvox-field-name %s" data-field-id="%s">
+				<label class="formsvox-field-label">%s %s</label>
+				<div class="formsvox-field-group formsvox-grid-2">
 					<div>
-						<label for="formvox-input-%s-first" class="formvox-sub-label">%s</label>
-						<input type="text" id="formvox-input-%s-first" name="formvox_fields[%s][first]" value="%s" class="formvox-input" />
+						<label for="formsvox-input-%s-first" class="formsvox-sub-label">%s</label>
+						<input type="text" id="formsvox-input-%s-first" name="formsvox_fields[%s][first]" value="%s" class="formsvox-input" />
 					</div>
 					<div>
-						<label for="formvox-input-%s-last" class="formvox-sub-label">%s</label>
-						<input type="text" id="formvox-input-%s-last" name="formvox_fields[%s][last]" value="%s" class="formvox-input" />
+						<label for="formsvox-input-%s-last" class="formsvox-sub-label">%s</label>
+						<input type="text" id="formsvox-input-%s-last" name="formsvox_fields[%s][last]" value="%s" class="formsvox-input" />
 					</div>
 				</div>
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,
 			$label,
-			! empty( $field['required'] ) ? '<span class="formvox-required-asterisk">*</span>' : '',
+			! empty( $field['required'] ) ? '<span class="formsvox-required-asterisk">*</span>' : '',
 			$field_id,
-			__( 'First', 'formvox' ),
+			__( 'First', 'formsvox' ),
 			$field_id,
 			$field_id,
 			$first,
 			$field_id,
-			__( 'Last', 'formvox' ),
+			__( 'Last', 'formsvox' ),
 			$field_id,
 			$field_id,
 			$last

@@ -1,9 +1,9 @@
 <?php
 
-namespace FormVox\Tests;
+namespace FormsVox\Tests;
 
 use PHPUnit\Framework\TestCase;
-use FormVox\Notifications\EmailEngine;
+use FormsVox\Notifications\EmailEngine;
 
 class SmartTagParserTest extends TestCase {
 	public function test_smart_tags_replacement() {

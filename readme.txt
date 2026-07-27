@@ -1,4 +1,4 @@
-=== FormVox - Drag & Drop Form Builder ===
+=== FormsVox — Drag & Drop Form Builder ===
 Contributors: loudvox
 Tags: form builder, contact form, forms, stripe, mailchimp
 Requires at least: 6.4
@@ -8,11 +8,13 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-FormVox is the fast, accessible, developer-friendly WordPress form builder plugin with drag & drop builder, 27 field types, conditional logic, entries, Stripe payments, and free Webhooks.
+FormsVox is the fast, accessible, developer-friendly WordPress form builder plugin with drag & drop builder, 27 field types, conditional logic, entries, Stripe payments, and free Webhooks.
 
 == Description ==
 
-FormVox provides a modern, fast, and accessible drag-and-drop form building experience for WordPress site owners and developers. Unlike other plugins that hide essential features behind high per-site subscription paywalls, FormVox includes conditional logic, 27 field types, Stripe payments, and arbitrary Webhooks in the core plugin for free.
+A VoiceCore product.
+
+FormsVox provides a modern, fast, and accessible drag-and-drop form building experience for WordPress site owners and developers. Unlike other plugins that hide essential features behind high per-site subscription paywalls, FormsVox includes conditional logic, 27 field types, Stripe payments, and arbitrary Webhooks in the core plugin for free.
 
 = Key Features =
 * **Fast Drag & Drop Builder**: Built with modern React and TypeScript in the admin area.
@@ -26,17 +28,17 @@ FormVox provides a modern, fast, and accessible drag-and-drop form building expe
 
 == Installation ==
 
-1. Upload the `formvox` directory to `/wp-content/plugins/`.
-2. Activate FormVox through the 'Plugins' menu in WordPress.
-3. Navigate to **FormVox > Add New Form** to create your first form.
+1. Upload the `formsvox` directory to `/wp-content/plugins/`.
+2. Activate FormsVox through the 'Plugins' menu in WordPress.
+3. Navigate to **FormsVox > Add New Form** to create your first form.
 
 == Frequently Asked Questions ==
 
 = Is conditional logic free? =
-Yes! Conditional logic is included in FormVox Core at zero additional cost.
+Yes! Conditional logic is included in FormsVox Core at zero additional cost.
 
 = Are entries stored as custom database tables? =
-Yes. Entries are stored in custom database tables `{prefix}formvox_entries` for fast querying and scaling.
+Yes. Entries are stored in custom database tables `{prefix}formsvox_entries` for fast querying and scaling.
 
 == Screenshots ==
 
@@ -47,4 +49,4 @@ Yes. Entries are stored in custom database tables `{prefix}formvox_entries` for 
 == Changelog ==
 
 = 1.0.0 =
-* Initial release of FormVox Core Plugin.
+* Initial release of FormsVox Core Plugin.

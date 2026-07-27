@@ -1,31 +1,31 @@
 <?php
 
-namespace FormVox\Tests;
+namespace FormsVox\Tests;
 
 use PHPUnit\Framework\TestCase;
-use FormVox\Fields\Types\Text;
-use FormVox\Fields\Types\Textarea;
-use FormVox\Fields\Types\Name;
-use FormVox\Fields\Types\Email;
-use FormVox\Fields\Types\Phone;
-use FormVox\Fields\Types\Address;
-use FormVox\Fields\Types\URL;
-use FormVox\Fields\Types\Number;
-use FormVox\Fields\Types\Slider;
-use FormVox\Fields\Types\Dropdown;
-use FormVox\Fields\Types\Checkboxes;
-use FormVox\Fields\Types\Radio;
-use FormVox\Fields\Types\DateTime;
-use FormVox\Fields\Types\FileUpload;
-use FormVox\Fields\Types\Password;
-use FormVox\Fields\Types\Hidden;
-use FormVox\Fields\Types\Rating;
-use FormVox\Fields\Types\Likert;
-use FormVox\Fields\Types\NPS;
-use FormVox\Fields\Types\Repeater;
-use FormVox\Fields\Types\PaymentSingle;
-use FormVox\Fields\Types\PaymentMultiple;
-use FormVox\Fields\Types\PaymentTotal;
+use FormsVox\Fields\Types\Text;
+use FormsVox\Fields\Types\Textarea;
+use FormsVox\Fields\Types\Name;
+use FormsVox\Fields\Types\Email;
+use FormsVox\Fields\Types\Phone;
+use FormsVox\Fields\Types\Address;
+use FormsVox\Fields\Types\URL;
+use FormsVox\Fields\Types\Number;
+use FormsVox\Fields\Types\Slider;
+use FormsVox\Fields\Types\Dropdown;
+use FormsVox\Fields\Types\Checkboxes;
+use FormsVox\Fields\Types\Radio;
+use FormsVox\Fields\Types\DateTime;
+use FormsVox\Fields\Types\FileUpload;
+use FormsVox\Fields\Types\Password;
+use FormsVox\Fields\Types\Hidden;
+use FormsVox\Fields\Types\Rating;
+use FormsVox\Fields\Types\Likert;
+use FormsVox\Fields\Types\NPS;
+use FormsVox\Fields\Types\Repeater;
+use FormsVox\Fields\Types\PaymentSingle;
+use FormsVox\Fields\Types\PaymentMultiple;
+use FormsVox\Fields\Types\PaymentTotal;
 
 class FieldSanitizeValidateTest extends TestCase {
 	public function test_text_field_sanitize_and_validate() {

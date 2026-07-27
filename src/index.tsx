@@ -9,9 +9,9 @@ const App: React.FC = () => {
   const [activeFormId, setActiveFormId] = useState<number | null>(null);
 
   return (
-    <div className="formvox-admin-wrap">
-      <nav className="formvox-main-nav">
-        <h2 className="formvox-brand">FormVox</h2>
+    <div className="formsvox-admin-wrap">
+      <nav className="formsvox-main-nav">
+        <h2 className="formsvox-brand">FormsVox</h2>
         <button
           className={`button ${view === 'builder' ? 'button-primary' : ''}`}
           onClick={() => setView('builder')}
@@ -32,7 +32,7 @@ const App: React.FC = () => {
         </button>
       </nav>
 
-      <main className="formvox-admin-content">
+      <main className="formsvox-admin-content">
         {view === 'builder' && <FormBuilder formId={activeFormId} />}
         {view === 'entries' && <EntriesManager />}
         {view === 'settings' && <SettingsPanel />}
@@ -42,7 +42,7 @@ const App: React.FC = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  const rootEl = document.getElementById('formvox-admin-app');
+  const rootEl = document.getElementById('formsvox-admin-app');
   if (rootEl) {
     const root = createRoot(rootEl);
     root.render(<App />);

@@ -1,6 +1,6 @@
 <?php
 
-namespace FormVox\Fields;
+namespace FormsVox\Fields;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -98,7 +98,7 @@ abstract class BaseField {
 
 		if ( $is_required && $is_empty ) {
 			/* translators: %s: Field label */
-			return new \WP_Error( 'required_field', sprintf( __( '%s is required.', 'formvox' ), esc_html( $field['label'] ) ) );
+			return new \WP_Error( 'required_field', sprintf( __( '%s is required.', 'formsvox' ), esc_html( $field['label'] ) ) );
 		}
 
 		return true;

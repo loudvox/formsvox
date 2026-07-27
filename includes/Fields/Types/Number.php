@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class Number extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Number', 'formvox' );
+		return __( 'Number', 'formsvox' );
 	}
 
 	public function sanitize( $value, $field ) {
@@ -29,7 +29,7 @@ class Number extends BaseField {
 
 		if ( '' !== (string) $value && ! is_numeric( $value ) ) {
 			/* translators: %s: Field label */
-			return new \WP_Error( 'invalid_number', sprintf( __( '%s must be a valid number.', 'formvox' ), esc_html( $field['label'] ) ) );
+			return new \WP_Error( 'invalid_number', sprintf( __( '%s must be a valid number.', 'formsvox' ), esc_html( $field['label'] ) ) );
 		}
 
 		return true;
@@ -44,19 +44,19 @@ class Number extends BaseField {
 		$min         = isset( $field['min'] ) ? 'min="' . esc_attr( $field['min'] ) . '"' : '';
 		$max         = isset( $field['max'] ) ? 'max="' . esc_attr( $field['max'] ) . '"' : '';
 		$step        = isset( $field['step'] ) ? 'step="' . esc_attr( $field['step'] ) . '"' : '';
-		$desc        = ! empty( $field['description'] ) ? '<span class="formvox-field-description">' . esc_html( $field['description'] ) . '</span>' : '';
+		$desc        = ! empty( $field['description'] ) ? '<span class="formsvox-field-description">' . esc_html( $field['description'] ) . '</span>' : '';
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-number %s" data-field-id="%s">
-				<label for="formvox-input-%s" class="formvox-field-label">%s %s</label>
-				<input type="number" id="formvox-input-%s" name="formvox_fields[%s]" value="%s" placeholder="%s" %s %s %s class="formvox-input" %s />
+			'<div class="formsvox-field formsvox-field-number %s" data-field-id="%s">
+				<label for="formsvox-input-%s" class="formsvox-field-label">%s %s</label>
+				<input type="number" id="formsvox-input-%s" name="formsvox_fields[%s]" value="%s" placeholder="%s" %s %s %s class="formsvox-input" %s />
 				%s
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,
 			$field_id,
 			$label,
-			! empty( $field['required'] ) ? '<span class="formvox-required-asterisk">*</span>' : '',
+			! empty( $field['required'] ) ? '<span class="formsvox-required-asterisk">*</span>' : '',
 			$field_id,
 			$field_id,
 			$val,

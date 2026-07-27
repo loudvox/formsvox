@@ -39,17 +39,17 @@ export const FieldPalette: React.FC<FieldPaletteProps> = ({ onAddField }) => {
   const categories = ['Standard', 'Fancy', 'Layout', 'Payment'];
 
   return (
-    <div className="formvox-palette">
+    <div className="formsvox-palette">
       <h3>Add Fields</h3>
       {categories.map((cat) => (
-        <div key={cat} className="formvox-palette-category">
+        <div key={cat} className="formsvox-palette-category">
           <h4>{cat} Fields</h4>
-          <div className="formvox-palette-grid">
+          <div className="formsvox-palette-grid">
             {PALETTE_ITEMS.filter((item) => item.category === cat).map((item) => (
               <button
                 key={item.type}
                 type="button"
-                className="formvox-palette-btn"
+                className="formsvox-palette-btn"
                 onClick={() => onAddField(item.type, item.label)}
               >
                 + {item.label}

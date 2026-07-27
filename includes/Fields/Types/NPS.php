@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class NPS extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Net Promoter Score (NPS)', 'formvox' );
+		return __( 'Net Promoter Score (NPS)', 'formsvox' );
 	}
 
 	public function get_category() {
@@ -32,11 +32,11 @@ class NPS extends BaseField {
 
 		$buttons_html = '';
 		for ( $i = 0; $i <= 10; $i++ ) {
-			$opt_id  = "formvox-nps-{$field_id}-{$i}";
+			$opt_id  = "formsvox-nps-{$field_id}-{$i}";
 			$checked = checked( $val, $i, false );
 			$buttons_html .= sprintf(
-				'<div class="formvox-nps-item">
-					<input type="radio" id="%s" name="formvox_fields[%s]" value="%d" %s class="formvox-nps-input" />
+				'<div class="formsvox-nps-item">
+					<input type="radio" id="%s" name="formsvox_fields[%s]" value="%d" %s class="formsvox-nps-input" />
 					<label for="%s">%d</label>
 				</div>',
 				esc_attr( $opt_id ),
@@ -49,10 +49,10 @@ class NPS extends BaseField {
 		}
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-nps %s" data-field-id="%s">
-				<fieldset><legend class="formvox-field-label">%s %s</legend>
-				<div class="formvox-nps-scale">%s</div>
-				<div class="formvox-nps-labels">
+			'<div class="formsvox-field formsvox-field-nps %s" data-field-id="%s">
+				<fieldset><legend class="formsvox-field-label">%s %s</legend>
+				<div class="formsvox-nps-scale">%s</div>
+				<div class="formsvox-nps-labels">
 					<span>%s</span>
 					<span>%s</span>
 				</div></fieldset>
@@ -60,10 +60,10 @@ class NPS extends BaseField {
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,
 			$label,
-			! empty( $field['required'] ) ? '<span class="formvox-required-asterisk">*</span>' : '',
+			! empty( $field['required'] ) ? '<span class="formsvox-required-asterisk">*</span>' : '',
 			$buttons_html,
-			__( '0 - Not likely at all', 'formvox' ),
-			__( '10 - Extremely likely', 'formvox' )
+			__( '0 - Not likely at all', 'formsvox' ),
+			__( '10 - Extremely likely', 'formsvox' )
 		);
 	}
 }

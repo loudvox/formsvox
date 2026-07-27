@@ -1,6 +1,6 @@
 <?php
 
-namespace FormVox\DB;
+namespace FormsVox\DB;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -17,7 +17,7 @@ class FormModel {
 	 */
 	public static function get_table_name() {
 		global $wpdb;
-		return $wpdb->prefix . 'formvox_forms';
+		return $wpdb->prefix . 'formsvox_forms';
 	}
 
 	/**

@@ -1,10 +1,10 @@
 <?php
 
 define( 'ABSPATH', __DIR__ . '/../../' );
-define( 'FORMVOX_VERSION', '1.0.0' );
-define( 'FORMVOX_FILE', __DIR__ . '/../../formvox.php' );
-define( 'FORMVOX_PATH', __DIR__ . '/../../' );
-define( 'FORMVOX_URL', 'http://example.org/wp-content/plugins/formvox/' );
+define( 'FORMSVOX_VERSION', '1.0.0' );
+define( 'FORMSVOX_FILE', __DIR__ . '/../../formsvox.php' );
+define( 'FORMSVOX_PATH', __DIR__ . '/../../' );
+define( 'FORMSVOX_URL', 'http://example.org/wp-content/plugins/formsvox/' );
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class Textarea extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Paragraph Text', 'formvox' );
+		return __( 'Paragraph Text', 'formsvox' );
 	}
 
 	public function sanitize( $value, $field ) {
@@ -27,19 +27,19 @@ class Textarea extends BaseField {
 		$val         = esc_textarea( is_null( $value ) ? ( isset( $field['default_val'] ) ? $field['default_val'] : '' ) : $value );
 		$placeholder = esc_attr( isset( $field['placeholder'] ) ? $field['placeholder'] : '' );
 		$required    = ! empty( $field['required'] ) ? 'required aria-required="true"' : '';
-		$desc        = ! empty( $field['description'] ) ? '<span class="formvox-field-description">' . esc_html( $field['description'] ) . '</span>' : '';
+		$desc        = ! empty( $field['description'] ) ? '<span class="formsvox-field-description">' . esc_html( $field['description'] ) . '</span>' : '';
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-textarea %s" data-field-id="%s">
-				<label for="formvox-input-%s" class="formvox-field-label">%s %s</label>
-				<textarea id="formvox-input-%s" name="formvox_fields[%s]" placeholder="%s" class="formvox-textarea" rows="5" %s>%s</textarea>
+			'<div class="formsvox-field formsvox-field-textarea %s" data-field-id="%s">
+				<label for="formsvox-input-%s" class="formsvox-field-label">%s %s</label>
+				<textarea id="formsvox-input-%s" name="formsvox_fields[%s]" placeholder="%s" class="formsvox-textarea" rows="5" %s>%s</textarea>
 				%s
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,
 			$field_id,
 			$label,
-			! empty( $field['required'] ) ? '<span class="formvox-required-asterisk">*</span>' : '',
+			! empty( $field['required'] ) ? '<span class="formsvox-required-asterisk">*</span>' : '',
 			$field_id,
 			$field_id,
 			$placeholder,

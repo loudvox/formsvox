@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class Likert extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Likert Scale', 'formvox' );
+		return __( 'Likert Scale', 'formsvox' );
 	}
 
 	public function get_category() {
@@ -52,12 +52,12 @@ class Likert extends BaseField {
 
 			foreach ( $columns as $c_idx => $col_label ) {
 				$c_key   = "col_{$c_idx}";
-				$opt_id  = "formvox-likert-{$field_id}-{$r_idx}-{$c_idx}";
+				$opt_id  = "formsvox-likert-{$field_id}-{$r_idx}-{$c_idx}";
 				$checked = isset( $vals[ $r_key ] ) && $vals[ $r_key ] === $c_key ? 'checked' : '';
 
 				$tbody .= sprintf(
-					'<td class="formvox-text-center">
-						<input type="radio" id="%s" name="formvox_fields[%s][%s]" value="%s" %s />
+					'<td class="formsvox-text-center">
+						<input type="radio" id="%s" name="formsvox_fields[%s][%s]" value="%s" %s />
 					</td>',
 					esc_attr( $opt_id ),
 					$field_id,
@@ -70,14 +70,14 @@ class Likert extends BaseField {
 		}
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-likert %s" data-field-id="%s">
-				<label class="formvox-field-label">%s %s</label>
-				<table class="formvox-likert-table"><thead>%s</thead><tbody>%s</tbody></table>
+			'<div class="formsvox-field formsvox-field-likert %s" data-field-id="%s">
+				<label class="formsvox-field-label">%s %s</label>
+				<table class="formsvox-likert-table"><thead>%s</thead><tbody>%s</tbody></table>
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,
 			$label,
-			! empty( $field['required'] ) ? '<span class="formvox-required-asterisk">*</span>' : '',
+			! empty( $field['required'] ) ? '<span class="formsvox-required-asterisk">*</span>' : '',
 			$thead,
 			$tbody
 		);

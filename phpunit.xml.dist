@@ -8,7 +8,7 @@
          convertWarningsToExceptions="true"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="FormVox Test Suite">
+        <testsuite name="FormsVox Test Suite">
             <directory suffix="Test.php">./tests/phpunit/</directory>
         </testsuite>
     </testsuites>

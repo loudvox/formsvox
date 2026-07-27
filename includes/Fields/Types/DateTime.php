@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class DateTime extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Date / Time', 'formvox' );
+		return __( 'Date / Time', 'formsvox' );
 	}
 
 	public function sanitize( $value, $field ) {
@@ -35,25 +35,25 @@ class DateTime extends BaseField {
 		$tm       = esc_attr( isset( $val['time'] ) ? $val['time'] : '' );
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-datetime %s" data-field-id="%s">
-				<label class="formvox-field-label">%s %s</label>
-				<div class="formvox-grid-2">
+			'<div class="formsvox-field formsvox-field-datetime %s" data-field-id="%s">
+				<label class="formsvox-field-label">%s %s</label>
+				<div class="formsvox-grid-2">
 					<div>
-						<label for="formvox-input-%s-date" class="formvox-sub-label">%s</label>
-						<input type="date" id="formvox-input-%s-date" name="formvox_fields[%s][date]" value="%s" class="formvox-input" />
+						<label for="formsvox-input-%s-date" class="formsvox-sub-label">%s</label>
+						<input type="date" id="formsvox-input-%s-date" name="formsvox_fields[%s][date]" value="%s" class="formsvox-input" />
 					</div>
 					<div>
-						<label for="formvox-input-%s-time" class="formvox-sub-label">%s</label>
-						<input type="time" id="formvox-input-%s-time" name="formvox_fields[%s][time]" value="%s" class="formvox-input" />
+						<label for="formsvox-input-%s-time" class="formsvox-sub-label">%s</label>
+						<input type="time" id="formsvox-input-%s-time" name="formsvox_fields[%s][time]" value="%s" class="formsvox-input" />
 					</div>
 				</div>
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,
 			$label,
-			! empty( $field['required'] ) ? '<span class="formvox-required-asterisk">*</span>' : '',
-			$field_id, __( 'Date', 'formvox' ), $field_id, $field_id, $dt,
-			$field_id, __( 'Time', 'formvox' ), $field_id, $field_id, $tm
+			! empty( $field['required'] ) ? '<span class="formsvox-required-asterisk">*</span>' : '',
+			$field_id, __( 'Date', 'formsvox' ), $field_id, $field_id, $dt,
+			$field_id, __( 'Time', 'formsvox' ), $field_id, $field_id, $tm
 		);
 	}
 }

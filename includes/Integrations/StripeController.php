@@ -1,6 +1,6 @@
 <?php
 
-namespace FormVox\Integrations;
+namespace FormsVox\Integrations;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -24,13 +24,13 @@ class StripeController {
 	}
 
 	public function register_routes() {
-		register_rest_route( 'formvox/v1', '/stripe/create-intent', array(
+		register_rest_route( 'formsvox/v1', '/stripe/create-intent', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
 			'callback'            => array( $this, 'create_intent' ),
 			'permission_callback' => '__return_true',
 		) );
 
-		register_rest_route( 'formvox/v1', '/stripe/webhook', array(
+		register_rest_route( 'formsvox/v1', '/stripe/webhook', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
 			'callback'            => array( $this, 'handle_webhook' ),
 			'permission_callback' => '__return_true',
@@ -43,14 +43,14 @@ class StripeController {
 		$form_id  = intval( $request->get_param( 'form_id' ) );
 
 		if ( $amount <= 0 ) {
-			return new \WP_Error( 'invalid_amount', __( 'Payment amount must be greater than 0.', 'formvox' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'invalid_amount', __( 'Payment amount must be greater than 0.', 'formsvox' ), array( 'status' => 400 ) );
 		}
 
-		$settings = get_option( 'formvox_settings', array() );
+		$settings = get_option( 'formsvox_settings', array() );
 		$secret   = isset( $settings['stripe_secret'] ) ? trim( $settings['stripe_secret'] ) : '';
 
 		if ( empty( $secret ) ) {
-			return new \WP_Error( 'stripe_not_configured', __( 'Stripe secret key is missing in settings.', 'formvox' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'stripe_not_configured', __( 'Stripe secret key is missing in settings.', 'formsvox' ), array( 'status' => 400 ) );
 		}
 
 		$response = wp_remote_post( 'https://api.stripe.com/v1/payment_intents', array(
@@ -66,7 +66,7 @@ class StripeController {
 		) );
 
 		if ( is_wp_error( $response ) ) {
-			return new \WP_Error( 'stripe_api_error', __( 'Failed to communicate with Stripe.', 'formvox' ), array( 'status' => 500 ) );
+			return new \WP_Error( 'stripe_api_error', __( 'Failed to communicate with Stripe.', 'formsvox' ), array( 'status' => 500 ) );
 		}
 
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -84,19 +84,19 @@ class StripeController {
 		$payload   = $request->get_body();
 		$sig_header = $request->get_header( 'stripe_signature' ) ?: $request->get_header( 'Stripe-Signature' );
 
-		$settings       = get_option( 'formvox_settings', array() );
+		$settings       = get_option( 'formsvox_settings', array() );
 		$webhook_secret = isset( $settings['stripe_webhook_secret'] ) ? trim( $settings['stripe_webhook_secret'] ) : '';
 
 		// Verify signature if secret is present
 		if ( ! empty( $webhook_secret ) && ! empty( $sig_header ) ) {
 			if ( ! $this->verify_stripe_signature( $payload, $sig_header, $webhook_secret ) ) {
-				return new \WP_Error( 'invalid_signature', __( 'Stripe webhook signature verification failed.', 'formvox' ), array( 'status' => 400 ) );
+				return new \WP_Error( 'invalid_signature', __( 'Stripe webhook signature verification failed.', 'formsvox' ), array( 'status' => 400 ) );
 			}
 		}
 
 		$event = json_decode( $payload, true );
 		if ( empty( $event['type'] ) ) {
-			return new \WP_Error( 'invalid_event', __( 'Invalid webhook payload.', 'formvox' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'invalid_event', __( 'Invalid webhook payload.', 'formsvox' ), array( 'status' => 400 ) );
 		}
 
 		if ( 'payment_intent.succeeded' === $event['type'] ) {
@@ -105,9 +105,9 @@ class StripeController {
 			$entry_id = isset( $intent['metadata']['entry_id'] ) ? intval( $intent['metadata']['entry_id'] ) : 0;
 
 			if ( $entry_id > 0 ) {
-				\FormVox\DB\EntryModel::update( $entry_id, array( 'status' => 'paid' ) );
+				\FormsVox\DB\EntryModel::update( $entry_id, array( 'status' => 'paid' ) );
 			}
-			do_action( 'formvox_stripe_payment_succeeded', $intent, $form_id, $entry_id );
+			do_action( 'formsvox_stripe_payment_succeeded', $intent, $form_id, $entry_id );
 		}
 
 		return rest_ensure_response( array( 'received' => true ) );

@@ -1,13 +1,13 @@
 <?php
 
-namespace FormVox;
+namespace FormsVox;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * Main FormVox Plugin Singleton Class.
+ * Main FormsVox Plugin Singleton Class.
  */
 class Plugin {
 	/**
@@ -62,7 +62,7 @@ class Plugin {
 	 * Load translation textdomain.
 	 */
 	public function load_textdomain() {
-		load_plugin_textdomain( 'formvox', false, dirname( plugin_basename( FORMVOX_FILE ) ) . '/languages' );
+		load_plugin_textdomain( 'formsvox', false, dirname( plugin_basename( FORMSVOX_FILE ) ) . '/languages' );
 	}
 
 	/**
@@ -70,7 +70,7 @@ class Plugin {
 	 */
 	public static function activate() {
 		DB\Migrator::get_instance()->migrate();
-		update_option( 'formvox_version', FORMVOX_VERSION );
+		update_option( 'formsvox_version', FORMSVOX_VERSION );
 	}
 
 	/**

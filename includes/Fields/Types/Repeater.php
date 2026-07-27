@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class Repeater extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Repeater Field', 'formvox' );
+		return __( 'Repeater Field', 'formsvox' );
 	}
 
 	public function get_category() {
@@ -38,7 +38,7 @@ class Repeater extends BaseField {
 		$field_id   = esc_attr( $field['id'] );
 		$label      = esc_html( $field['label'] );
 		$sub_fields = isset( $field['sub_fields'] ) && is_array( $field['sub_fields'] ) ? $field['sub_fields'] : array(
-			array( 'id' => 'item_name', 'label' => __( 'Item Name', 'formvox' ) ),
+			array( 'id' => 'item_name', 'label' => __( 'Item Name', 'formsvox' ) ),
 		);
 		$rows       = is_array( $value ) && ! empty( $value ) ? $value : array( array() );
 
@@ -51,8 +51,8 @@ class Repeater extends BaseField {
 				$sub_val  = esc_attr( isset( $row_data[ $sub_id ] ) ? $row_data[ $sub_id ] : '' );
 				$sub_html .= sprintf(
 					'<div>
-						<label class="formvox-sub-label">%s</label>
-						<input type="text" name="formvox_fields[%s][%d][%s]" value="%s" class="formvox-input" />
+						<label class="formsvox-sub-label">%s</label>
+						<input type="text" name="formsvox_fields[%s][%d][%s]" value="%s" class="formsvox-input" />
 					</div>',
 					$sub_lbl,
 					$field_id,
@@ -63,26 +63,26 @@ class Repeater extends BaseField {
 			}
 
 			$rows_html .= sprintf(
-				'<div class="formvox-repeater-row formvox-grid-2 formvox-mb-2">
+				'<div class="formsvox-repeater-row formsvox-grid-2 formsvox-mb-2">
 					%s
-					<button type="button" class="formvox-btn-remove-row button">&times;</button>
+					<button type="button" class="formsvox-btn-remove-row button">&times;</button>
 				</div>',
 				$sub_html
 			);
 		}
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-repeater %s" data-field-id="%s">
-				<label class="formvox-field-label">%s %s</label>
-				<div class="formvox-repeater-container">%s</div>
-				<button type="button" class="formvox-btn-add-row button">%s</button>
+			'<div class="formsvox-field formsvox-field-repeater %s" data-field-id="%s">
+				<label class="formsvox-field-label">%s %s</label>
+				<div class="formsvox-repeater-container">%s</div>
+				<button type="button" class="formsvox-btn-add-row button">%s</button>
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,
 			$label,
-			! empty( $field['required'] ) ? '<span class="formvox-required-asterisk">*</span>' : '',
+			! empty( $field['required'] ) ? '<span class="formsvox-required-asterisk">*</span>' : '',
 			$rows_html,
-			__( '+ Add Item', 'formvox' )
+			__( '+ Add Item', 'formsvox' )
 		);
 	}
 }

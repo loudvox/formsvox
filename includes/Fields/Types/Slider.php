@@ -1,8 +1,8 @@
 <?php
 
-namespace FormVox\Fields\Types;
+namespace FormsVox\Fields\Types;
 
-use FormVox\Fields\BaseField;
+use FormsVox\Fields\BaseField;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ class Slider extends BaseField {
 	}
 
 	public function get_title() {
-		return __( 'Number Slider', 'formvox' );
+		return __( 'Number Slider', 'formsvox' );
 	}
 
 	public function sanitize( $value, $field ) {
@@ -30,9 +30,9 @@ class Slider extends BaseField {
 		$val      = is_null( $value ) ? ( isset( $field['default_val'] ) ? intval( $field['default_val'] ) : $min ) : intval( $value );
 
 		return sprintf(
-			'<div class="formvox-field formvox-field-slider %s" data-field-id="%s">
-				<label for="formvox-input-%s" class="formvox-field-label">%s: <span class="formvox-slider-value">%d</span></label>
-				<input type="range" id="formvox-input-%s" name="formvox_fields[%s]" value="%d" min="%d" max="%d" step="%d" class="formvox-slider" oninput="this.previousElementSibling.querySelector(\'.formvox-slider-value\').textContent=this.value" />
+			'<div class="formsvox-field formsvox-field-slider %s" data-field-id="%s">
+				<label for="formsvox-input-%s" class="formsvox-field-label">%s: <span class="formsvox-slider-value">%d</span></label>
+				<input type="range" id="formsvox-input-%s" name="formsvox_fields[%s]" value="%d" min="%d" max="%d" step="%d" class="formsvox-slider" oninput="this.previousElementSibling.querySelector(\'.formsvox-slider-value\').textContent=this.value" />
 			</div>',
 			esc_attr( isset( $field['css_class'] ) ? $field['css_class'] : '' ),
 			$field_id,

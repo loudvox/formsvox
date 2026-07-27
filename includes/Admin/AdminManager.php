@@ -1,6 +1,6 @@
 <?php
 
-namespace FormVox\Admin;
+namespace FormsVox\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -25,60 +25,60 @@ class AdminManager {
 
 	public function register_menu_pages() {
 		add_menu_page(
-			__( 'FormVox', 'formvox' ),
-			__( 'FormVox', 'formvox' ),
+			__( 'FormsVox', 'formsvox' ),
+			__( 'FormsVox', 'formsvox' ),
 			'manage_options',
-			'formvox',
+			'formsvox',
 			array( $this, 'render_app' ),
 			'dashicons-feedback',
 			25
 		);
 
 		add_submenu_page(
-			'formvox',
-			__( 'All Forms', 'formvox' ),
-			__( 'All Forms', 'formvox' ),
+			'formsvox',
+			__( 'All Forms', 'formsvox' ),
+			__( 'All Forms', 'formsvox' ),
 			'manage_options',
-			'formvox',
+			'formsvox',
 			array( $this, 'render_app' )
 		);
 
 		add_submenu_page(
-			'formvox',
-			__( 'Add New Form', 'formvox' ),
-			__( 'Add New Form', 'formvox' ),
+			'formsvox',
+			__( 'Add New Form', 'formsvox' ),
+			__( 'Add New Form', 'formsvox' ),
 			'manage_options',
-			'formvox#/new',
+			'formsvox#/new',
 			array( $this, 'render_app' )
 		);
 
 		add_submenu_page(
-			'formvox',
-			__( 'Entries', 'formvox' ),
-			__( 'Entries', 'formvox' ),
+			'formsvox',
+			__( 'Entries', 'formsvox' ),
+			__( 'Entries', 'formsvox' ),
 			'manage_options',
-			'formvox-entries',
+			'formsvox-entries',
 			array( $this, 'render_app' )
 		);
 
 		add_submenu_page(
-			'formvox',
-			__( 'Settings', 'formvox' ),
-			__( 'Settings', 'formvox' ),
+			'formsvox',
+			__( 'Settings', 'formsvox' ),
+			__( 'Settings', 'formsvox' ),
 			'manage_options',
-			'formvox-settings',
+			'formsvox-settings',
 			array( $this, 'render_app' )
 		);
 	}
 
 	public function enqueue_admin_assets( $hook ) {
-		if ( false === strpos( $hook, 'formvox' ) ) {
+		if ( false === strpos( $hook, 'formsvox' ) ) {
 			return;
 		}
 
-		$asset_file = FORMVOX_PATH . 'build/index.asset.php';
+		$asset_file = FORMSVOX_PATH . 'build/index.asset.php';
 		$deps       = array( 'wp-element', 'wp-components', 'wp-data', 'wp-i18n' );
-		$version    = FORMVOX_VERSION;
+		$version    = FORMSVOX_VERSION;
 
 		if ( file_exists( $asset_file ) ) {
 			$asset   = include $asset_file;
@@ -87,53 +87,53 @@ class AdminManager {
 		}
 
 		wp_enqueue_script(
-			'formvox-admin-builder',
-			FORMVOX_URL . 'build/index.js',
+			'formsvox-admin-builder',
+			FORMSVOX_URL . 'build/index.js',
 			$deps,
 			$version,
 			true
 		);
 
-		wp_localize_script( 'formvox-admin-builder', 'formvoxAdmin', array(
+		wp_localize_script( 'formsvox-admin-builder', 'formsvoxAdmin', array(
 			'nonce'   => wp_create_nonce( 'wp_rest' ),
-			'restUrl' => esc_url_raw( rest_url( 'formvox/v1' ) ),
+			'restUrl' => esc_url_raw( rest_url( 'formsvox/v1' ) ),
 		) );
 
 		wp_enqueue_style(
-			'formvox-admin-style',
-			FORMVOX_URL . 'assets/css/admin.css',
+			'formsvox-admin-style',
+			FORMSVOX_URL . 'assets/css/admin.css',
 			array( 'wp-components' ),
-			FORMVOX_VERSION
+			FORMSVOX_VERSION
 		);
 	}
 
 	public function render_app() {
-		echo '<div class="wrap"><div id="formvox-admin-app"></div></div>';
+		echo '<div class="wrap"><div id="formsvox-admin-app"></div></div>';
 	}
 
 	public function render_pro_upsell_notice() {
-		if ( get_option( 'formvox_dismissed_pro_notice', false ) ) {
+		if ( get_option( 'formsvox_dismissed_pro_notice', false ) ) {
 			return;
 		}
 		echo '<div class="notice notice-info is-dismissible"><p>' .
 			sprintf(
 				/* translators: %s: Pro site link */
-				__( 'Enjoying FormVox? Upgrade to <a href="%s" target="_blank">FormVox Pro</a> for flat-rate unlimited site activations!', 'formvox' ),
-				'https://formvox.io'
+				__( 'Enjoying FormsVox? Upgrade to <a href="%s" target="_blank">FormsVox Pro</a> for flat-rate unlimited site activations!', 'formsvox' ),
+				'https://formsvox.io'
 			) .
 			'</p></div>';
 	}
 
 	public function register_dashboard_widget() {
 		wp_add_dashboard_widget(
-			'formvox_dashboard_widget',
-			__( 'FormVox Submissions (Last 7 Days)', 'formvox' ),
+			'formsvox_dashboard_widget',
+			__( 'FormsVox Submissions (Last 7 Days)', 'formsvox' ),
 			array( $this, 'render_dashboard_widget' )
 		);
 	}
 
 	public function render_dashboard_widget() {
-		$query = \FormVox\DB\EntryModel::query( array( 'limit' => 7 ) );
-		echo '<p>' . sprintf( __( 'Total Submissions Recently: %d', 'formvox' ), intval( $query['total'] ) ) . '</p>';
+		$query = \FormsVox\DB\EntryModel::query( array( 'limit' => 7 ) );
+		echo '<p>' . sprintf( __( 'Total Submissions Recently: %d', 'formsvox' ), intval( $query['total'] ) ) . '</p>';
 	}
 }
