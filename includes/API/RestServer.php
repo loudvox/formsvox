@@ -240,14 +240,52 @@ class RestServer {
 		}
 
 		$raw_fields = isset( $params['formsvox_fields'] ) && is_array( $params['formsvox_fields'] ) ? $params['formsvox_fields'] : array();
-		$schema     = isset( $form['schema'] ) ? $form['schema'] : array();
+		$result     = $this->process_entry_submission( $form, $raw_fields );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return rest_ensure_response( $result );
+	}
+
+	public function process_ai_submission( $form_id, $raw_fields = array(), $messages = array(), $score = null ) {
+		$ai_meta = array(
+			'_ai_transcript' => $messages,
+		);
+		if ( null !== $score ) {
+			$ai_meta['_ai_score'] = (int) $score;
+		}
+
+		$result = $this->process_entry_submission( $form_id, $raw_fields, $ai_meta );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return isset( $result['entry_id'] ) ? $result['entry_id'] : false;
+	}
+
+	private function process_entry_submission( $form, $raw_fields = array(), $ai_meta = array() ) {
+		$form_id = is_array( $form ) ? intval( $form['id'] ) : intval( $form );
+		if ( ! is_array( $form ) ) {
+			$form = FormModel::get( $form_id );
+		}
+
+		if ( ! $form ) {
+			return new \WP_Error( 'form_not_found', __( 'Form not found.', 'formsvox' ), array( 'status' => 404 ) );
+		}
+
+		if ( isset( $form['status'] ) && 'publish' !== $form['status'] ) {
+			return new \WP_Error( 'form_not_published', __( 'This form is not active or published.', 'formsvox' ), array( 'status' => 403 ) );
+		}
+
+		$schema      = isset( $form['schema'] ) ? $form['schema'] : array();
 		$form_fields = isset( $schema['fields'] ) && is_array( $schema['fields'] ) ? $schema['fields'] : array();
 
 		$registry         = \FormsVox\Fields\FieldRegistry::get_instance();
 		$sanitized_fields = array();
 		$errors           = array();
 
-		// Field-by-field validation and sanitization
 		foreach ( $form_fields as $field_config ) {
 			$field_id  = isset( $field_config['id'] ) ? $field_config['id'] : '';
 			$type      = isset( $field_config['type'] ) ? $field_config['type'] : 'text';
@@ -259,12 +297,12 @@ class RestServer {
 
 			// Check conditional logic visibility for this field
 			if ( ! empty( $field_config['conditional_logic'] ) && ! \FormsVox\Logic\Evaluator::evaluate( $field_config['conditional_logic'], $raw_fields ) ) {
-				continue; // Skip hidden conditional fields
+				continue;
 			}
 
 			$val = isset( $raw_fields[ $field_id ] ) ? $raw_fields[ $field_id ] : null;
 
-			// Validate field value
+			// Validate field value BEFORE sanitize
 			$validation_result = $field_obj->validate( $val, $field_config, $form );
 			if ( is_wp_error( $validation_result ) ) {
 				$errors[ $field_id ] = $validation_result->get_error_message();
@@ -288,13 +326,16 @@ class RestServer {
 		// Create Entry
 		$entry_id = EntryModel::create( $form_id, $sanitized_fields );
 
-		/**
-		 * Action Hook: formsvox_process_entry
-		 *
-		 * @param int   $entry_id Entry ID.
-		 * @param array $form     Form row array.
-		 * @param array $fields_data Submitted fields data.
-		 */
+		// Save AI meta if provided
+		if ( ! empty( $ai_meta ) && is_array( $ai_meta ) ) {
+			foreach ( $ai_meta as $meta_key => $meta_val ) {
+				if ( null !== $meta_val ) {
+					EntryModel::add_meta( $entry_id, $meta_key, $meta_val );
+				}
+			}
+		}
+
+		// Action Hook
 		do_action( 'formsvox_process_entry', $entry_id, $form, $sanitized_fields );
 
 		// Process Email Notifications & Integrations
@@ -302,7 +343,6 @@ class RestServer {
 		IntegrationManager::get_instance()->process_submission( $form, $entry_id, $sanitized_fields );
 
 		// Confirmation Response with Conditional Routing
-		$schema              = isset( $form['schema'] ) ? $form['schema'] : array();
 		$all_confirmations   = isset( $schema['confirmations'] ) && is_array( $schema['confirmations'] ) ? $schema['confirmations'] : array();
 		$valid_confirmations = array();
 
@@ -320,11 +360,12 @@ class RestServer {
 			);
 		}
 
-		return rest_ensure_response( array(
+		return array(
 			'success'       => true,
 			'entry_id'      => $entry_id,
 			'confirmations' => $valid_confirmations,
-		) );
+			'fields'        => $sanitized_fields,
+		);
 	}
 
 	public function get_entries( \WP_REST_Request $request ) {

@@ -56,4 +56,42 @@ class AIChatRelayTest extends TestCase {
 		$this->assertArrayNotHasKey( '_ai_transcript', $entry['meta'] );
 		$this->assertArrayNotHasKey( '_ai_score', $entry['meta'] );
 	}
+
+	public function test_ai_submission_with_invalid_email_is_rejected() {
+		$form_id = FormModel::create( 'AI Validation Form', array(
+			'fields' => array(
+				array( 'id' => 'email_1', 'type' => 'email', 'label' => 'Email Address', 'required' => true ),
+			),
+		) );
+
+		$raw_fields = array(
+			'email_1' => 'invalid-email-address',
+		);
+
+		$server = RestServer::get_instance();
+		$result = $server->process_ai_submission( $form_id, $raw_fields, array() );
+
+		$this->assertFalse( $result );
+	}
+
+	public function test_integrations_and_hooks_fire_on_ai_submission() {
+		$form_id = FormModel::create( 'AI Hook Test Form', array(
+			'fields' => array(
+				array( 'id' => 'name_1', 'type' => 'text', 'label' => 'Name' ),
+			),
+		) );
+
+		$fired = false;
+		$captured_id = 0;
+		add_action( 'formsvox_process_entry', function( $entry_id ) use ( &$fired, &$captured_id ) {
+			$fired = true;
+			$captured_id = $entry_id;
+		}, 10, 1 );
+
+		$server   = RestServer::get_instance();
+		$entry_id = $server->process_ai_submission( $form_id, array( 'name_1' => 'Hook Tester' ), array() );
+
+		$this->assertTrue( $fired );
+		$this->assertEquals( $entry_id, $captured_id );
+	}
 }
