@@ -369,23 +369,51 @@ class RestServer {
 	}
 
 	public function get_settings( \WP_REST_Request $request ) {
-		$settings = get_option( 'formvox_settings', array(
-			'recaptcha_site_key'   => '',
-			'recaptcha_secret_key' => '',
-			'turnstile_site_key'   => '',
-			'turnstile_secret_key' => '',
-			'stripe_publishable'   => '',
-			'stripe_secret'        => '',
-			'mailchimp_api_key'    => '',
-			'delete_on_uninstall'  => false,
-		) );
+		$defaults = array(
+			'recaptcha_site_key'    => '',
+			'recaptcha_secret_key'  => '',
+			'turnstile_site_key'    => '',
+			'turnstile_secret_key'  => '',
+			'hcaptcha_site_key'     => '',
+			'hcaptcha_secret_key'   => '',
+			'stripe_publishable'    => '',
+			'stripe_secret'         => '',
+			'stripe_webhook_secret' => '',
+			'mailchimp_api_key'     => '',
+			'delete_on_uninstall'   => false,
+		);
+		$settings = wp_parse_args( get_option( 'formvox_settings', array() ), $defaults );
 		return rest_ensure_response( $settings );
 	}
 
 	public function update_settings( \WP_REST_Request $request ) {
-		$settings = $request->get_params();
+		$params   = $request->get_params();
+		$settings = array();
+		$allowed  = array(
+			'recaptcha_site_key',
+			'recaptcha_secret_key',
+			'turnstile_site_key',
+			'turnstile_secret_key',
+			'hcaptcha_site_key',
+			'hcaptcha_secret_key',
+			'stripe_publishable',
+			'stripe_secret',
+			'stripe_webhook_secret',
+			'mailchimp_api_key',
+		);
+
+		foreach ( $allowed as $key ) {
+			if ( isset( $params[ $key ] ) ) {
+				$settings[ $key ] = sanitize_text_field( $params[ $key ] );
+			}
+		}
+
+		if ( isset( $params['delete_on_uninstall'] ) ) {
+			$settings['delete_on_uninstall'] = rest_sanitize_boolean( $params['delete_on_uninstall'] );
+		}
+
 		update_option( 'formvox_settings', $settings );
-		return rest_ensure_response( array( 'success' => true ) );
+		return rest_ensure_response( array( 'success' => true, 'settings' => $settings ) );
 	}
 
 	public function get_templates( \WP_REST_Request $request ) {
