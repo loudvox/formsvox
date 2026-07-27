@@ -1,0 +1,22 @@
+# Dependencies
+/vendor/
+/node_modules/
+/composer.phar
+
+# Build outputs
+/build/
+/assets/js/builder.js
+/assets/css/builder.css
+
+# Environment & IDE
+.env
+.env.local
+.DS_Store
+.idea/
+.vscode/
+
+# Testing & Cache
+/.phpunit.result.cache
+/.phpstan.cache/
+/coverage/
+/wp-content/

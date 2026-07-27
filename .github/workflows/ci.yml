@@ -1,0 +1,50 @@
+name: FormVox CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    name: PHP ${{ matrix.php-version }} Quality Gates
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['7.4', '8.0', '8.1', '8.2', '8.3']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+          tools: composer
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run PHP CodeSniffer (PHPCS)
+        run: vendor/bin/phpcs --standard=phpcs.xml.dist
+
+      - name: Run PHPStan Static Analysis
+        run: vendor/bin/phpstan analyse -c phpstan.neon
+
+      - name: Run PHPUnit Tests
+        run: vendor/bin/phpunit
+
+  plugin-check:
+    name: WordPress Plugin Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run WordPress Plugin Check Action
+        uses: wordpress/plugin-check-action@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}

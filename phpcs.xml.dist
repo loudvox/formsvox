@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<ruleset name="FormVox">
+    <description>FormVox WordPress Coding Standards Configuration</description>
+
+    <file>formvox.php</file>
+    <file>uninstall.php</file>
+    <file>includes/</file>
+
+    <exclude-pattern>/vendor/</exclude-pattern>
+    <exclude-pattern>/node_modules/</exclude-pattern>
+    <exclude-pattern>/build/</exclude-pattern>
+
+    <arg name="basepath" value="."/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg value="s"/>
+
+    <rule ref="WordPress-Core"/>
+    <rule ref="WordPress-Extra"/>
+
+    <config name="minimum_supported_wp_version" value="6.4"/>
+    <config name="testVersion" value="7.4-"/>
+
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <text_domain value="formvox"/>
+        </properties>
+    </rule>
+
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <prefixes type="array">
+                <element value="FormVox"/>
+                <element value="formvox"/>
+                <element value="FORMVOX"/>
+            </prefixes>
+        </properties>
+    </rule>
+</ruleset>
