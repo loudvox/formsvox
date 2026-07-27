@@ -82,8 +82,82 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // VoiceCore Conversational AI Chat Widget Initialization
+  function initConversationalWidget(form) {
+    if (!form.getAttribute('data-ai-mode')) return;
+
+    var formId = form.getAttribute('data-form-id');
+    var wrapper = form.closest('.formsvox-form-wrapper');
+    if (!wrapper) return;
+
+    // Create Chat Widget Container
+    var chatBox = document.createElement('div');
+    chatBox.className = 'formsvox-ai-chat-box';
+    chatBox.innerHTML =
+      '<div class="formsvox-ai-header"><span>FormsVox Assistant — Powered by VoiceCore AI</span></div>' +
+      '<div class="formsvox-ai-messages" role="log" aria-live="polite"></div>' +
+      '<div class="formsvox-ai-input-wrap">' +
+      '<input type="text" class="formsvox-ai-input" placeholder="Type your response..." aria-label="Type message" />' +
+      '<button type="button" class="formsvox-ai-send-btn">Send</button>' +
+      '</div>' +
+      '<div class="formsvox-ai-disclosure">AI Assistant — VoiceCore Data Privacy Disclosed</div>';
+
+    wrapper.appendChild(chatBox);
+
+    var messagesDiv = chatBox.querySelector('.formsvox-ai-messages');
+    var inputField = chatBox.querySelector('.formsvox-ai-input');
+    var sendBtn = chatBox.querySelector('.formsvox-ai-send-btn');
+    var conversation = [];
+
+    function addMessage(role, text) {
+      var msgDiv = document.createElement('div');
+      msgDiv.className = 'formsvox-ai-msg ' + role;
+      msgDiv.textContent = text;
+      messagesDiv.appendChild(msgDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      conversation.push({ role: role, content: text });
+    }
+
+    addMessage('assistant', 'Hello! I can help you complete this form conversationally. What is your name?');
+
+    function handleSend() {
+      var text = inputField.value.trim();
+      if (!text) return;
+      inputField.value = '';
+      addMessage('user', text);
+
+      var relayUrl = (window.formsvoxFrontend ? window.formsvoxFrontend.restUrl : '/wp-json/formsvox/v1') + '/ai/chat';
+      fetch(relayUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          form_id: Number(formId),
+          messages: conversation,
+        }),
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.text) {
+            addMessage('assistant', data.text);
+          } else {
+            addMessage('assistant', 'Thank you! I have saved your response.');
+          }
+        })
+        .catch(function () {
+          addMessage('assistant', 'I encountered a temporary connection issue. Please use the form fields below.');
+        });
+    }
+
+    sendBtn.addEventListener('click', handleSend);
+    inputField.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') handleSend();
+    });
+  }
+
   document.querySelectorAll('.formsvox-form').forEach(function (form) {
     evaluateConditionalLogic(form);
+    initConversationalWidget(form);
+
     form.addEventListener('input', function () {
       evaluateConditionalLogic(form);
     });
@@ -111,9 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
         method: 'POST',
         body: formData,
       })
-        .then(function (res) {
-          return res.json();
-        })
+        .then(function (res) { return res.json(); })
         .then(function (data) {
           if (submitBtn) submitBtn.disabled = false;
           if (data.success) {
@@ -137,25 +209,5 @@ document.addEventListener('DOMContentLoaded', function () {
           responseMsg.innerHTML = 'Submission failed. Please check your network.';
         });
     });
-  });
-
-  // Dynamic Repeater Rows
-  document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('formsvox-btn-add-row')) {
-      var container = e.target.previousElementSibling;
-      if (container && container.firstElementChild) {
-        var clone = container.firstElementChild.cloneNode(true);
-        clone.querySelectorAll('input').forEach(function (inp) {
-          inp.value = '';
-        });
-        container.appendChild(clone);
-      }
-    }
-    if (e.target.classList.contains('formsvox-btn-remove-row')) {
-      var row = e.target.closest('.formsvox-repeater-row');
-      if (row && row.parentNode.children.length > 1) {
-        row.remove();
-      }
-    }
   });
 });

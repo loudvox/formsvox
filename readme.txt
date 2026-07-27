@@ -24,7 +24,17 @@ FormsVox provides a modern, fast, and accessible drag-and-drop form building exp
 * **Anti-Spam Suite**: Built-in honeypot + time-trap token, plus reCAPTCHA v2/v3, hCaptcha, and Cloudflare Turnstile integrations.
 * **Integrations**: Stripe payments (PaymentIntents + Webhooks), Mailchimp opt-in, and free Webhooks.
 * **20 Pre-Built Templates**: One-click form creation for contact, quote, survey, booking, and more.
-* **WPForms Importer**: Effortlessly import forms and field settings from WPForms Lite.
+* **VoiceCore AI Conversational Agent**: Opt-in AI assistant for form completion, lead qualification, and visitor site content Q&A.
+
+== Third-Party Services ==
+
+FormsVox optionally integrates with the **VoiceCore AI SaaS Service** (api.voicecore.ai) to power the conversational AI agent mode, content indexing, and lead qualification.
+
+* **Service**: VoiceCore AI Platform (https://voicecore.ai)
+* **What Data is Sent**: When VoiceCore AI mode is enabled by the site owner, form schemas, user-entered chat messages, and published site content chunks (pages, posts, WooCommerce products) are transmitted securely to api.voicecore.ai over HTTPS.
+* **When Data is Sent**: Chat messages are transmitted in real-time when a visitor interacts with a conversational form widget. Site content chunks are sent when the site owner manually clicks "Re-index Site Content" or when scheduled daily via WP-Cron.
+* **Terms of Service**: https://voicecore.ai/terms
+* **Privacy Policy**: https://voicecore.ai/privacy
 
 == Installation ==
 

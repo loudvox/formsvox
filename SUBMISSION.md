@@ -1,61 +1,41 @@
-# FormsVox WordPress.org Submission Guide
+# FormsVox — A VoiceCore Product: Submission & Manual Smoke Test Guide
 
-This document summarizes the exact steps required to submit `formsvox.zip` to the WordPress.org plugin review queue.
-
----
-
-## 1. Pre-Submission Build & Zip Packaging
-
-Run the build script to compile assets and generate the production distribution zip:
-
-```bash
-# 1. Install production PHP dependencies
-composer install --no-dev --optimize-autoloader
-
-# 2. Build React admin builder assets
-npm run build
-
-# 3. Create clean zip file excluding developer files
-zip -r formsvox.zip . \
-  -x "*.git*" \
-  -x "*node_modules*" \
-  -x "*tests*" \
-  -x "*.github*" \
-  -x "composer.phar" \
-  -x "phpcs.xml.dist" \
-  -x "phpstan.neon" \
-  -x "phpunit.xml.dist" \
-  -x "tsconfig.json"
-```
+## Core Plugin & SaaS Backend Repositories
+- **FormsVox Free Core Plugin**: `https://github.com/loudvox/formsvox` (Public, GPLv2)
+- **VoiceCore AI SaaS Service**: `https://github.com/loudvox/voicecore-ai` (Private)
+- **FormsVox Pro Scaffold**: `https://github.com/loudvox/formsvox-pro` (Private)
 
 ---
 
-## 2. WordPress.org Plugin Review Queue Submission Steps
+## Step-by-Step Manual Smoke Test Instructions
 
-1. **Log in to WordPress.org**: Go to [https://wordpress.org/plugins/developers/add/](https://wordpress.org/plugins/developers/add/).
-2. **Upload `formsvox.zip`**: Select the generated `formsvox.zip` file.
-3. **Review Plugin Slug**: Confirm the plugin slug is `formsvox`.
-4. **Submit for Review**: Click **Submit Form**. The WordPress.org Plugin Review Team will analyze the plugin source code.
-5. **SVN Repository Access**: Once approved, you will receive an email containing SVN repository write access credentials (`https://plugins.svn.wordpress.org/formsvox/`).
+### 1. Installation & Activation
+1. Download or clone `formsvox` into `/wp-content/plugins/formsvox`.
+2. Activate **FormsVox — Drag & Drop Form Builder** in WordPress Admin > Plugins.
+3. Verify custom database tables `{prefix}formsvox_forms`, `{prefix}formsvox_entries`, and `{prefix}formsvox_entry_meta` are created.
 
----
+### 2. Connect VoiceCore AI Service
+1. Navigate to **FormsVox > Settings > VoiceCore AI Service**.
+2. Input a valid VoiceCore API Key (`vc_live_...`).
+3. Click **Save Settings**.
+4. Click **Re-index Site Content Now** to index published pages/posts into VoiceCore `pgvector` store.
 
-## 3. Initial SVN Tag & Release Deployment
+### 3. Build & Enable AI Mode on Form
+1. Go to **FormsVox > Add New Form**.
+2. Add fields: **Name** (`name_1`), **Email** (`email_1`), and **Message** (`message_1`).
+3. In **Form Settings**, toggle **Conversational AI Mode** to **ON**.
+4. Save the form and publish it to a WordPress page via shortcode `[formsvox id="1"]`.
 
-Once approved:
-1. Checkout the SVN repository:
-   ```bash
-   svn co https://plugins.svn.wordpress.org/formsvox/ svn-formsvox
-   ```
-2. Copy plugin files to `svn-formsvox/trunk/` and assets to `svn-formsvox/assets/`.
-3. Create the `1.0.0` tag:
-   ```bash
-   cp -r svn-formsvox/trunk svn-formsvox/tags/1.0.0
-   ```
-4. Commit to SVN:
-   ```bash
-   cd svn-formsvox
-   svn add --force trunk/ tags/1.0.0/ assets/
-   svn commit -m "Tagging release 1.0.0"
-   ```
-5. Subsequent releases will deploy automatically via the GitHub Action defined in `.github/workflows/ci.yml`!
+### 4. Visitor Chat & Entry Verification
+1. Visit the published form on the front-end.
+2. Verify the **FormsVox Assistant — Powered by VoiceCore AI** chat widget appears.
+3. Chat conversationally with the agent:
+   - *"My name is Jane Smith"*
+   - *"My email is jane@example.com"*
+   - *"I need help with custom software development"*
+4. The agent emits `submit_form`.
+5. Verify the entry is recorded under **FormsVox > Entries** with:
+   - Fields sanitized and populated (`Jane Smith`, `jane@example.com`).
+   - Entry marked with the **AI** badge.
+   - Click to inspect full transcript and lead qualification score.
+   - Confirm email notification dispatch with `{all_fields}`.

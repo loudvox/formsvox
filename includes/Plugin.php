@@ -56,6 +56,8 @@ class Plugin {
 		Frontend\Renderer::get_instance();
 		Blocks\GutenbergBlock::get_instance();
 		Importers\WPFormsImporter::get_instance();
+		AI\ModuleRegistry::get_instance();
+		AI\Ingest::get_instance();
 	}
 
 	/**

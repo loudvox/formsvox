@@ -100,8 +100,27 @@ class RestServer {
 		) );
 
 		register_rest_route( self::NAMESPACE, '/entries/export', array(
-			'methods'             => \WP_REST_Server::CREATABLE,
+			'methods'             => \WP_REST_Server::READABLE,
 			'callback'            => array( $this, 'export_entries' ),
+			'permission_callback' => array( $this, 'check_admin_permission' ),
+		) );
+
+		// VoiceCore AI Routes
+		register_rest_route( self::NAMESPACE, '/ai/chat', array(
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => array( $this, 'ai_chat_relay' ),
+			'permission_callback' => '__return_true',
+		) );
+
+		register_rest_route( self::NAMESPACE, '/ai/account', array(
+			'methods'             => \WP_REST_Server::READABLE,
+			'callback'            => array( $this, 'get_ai_account' ),
+			'permission_callback' => array( $this, 'check_admin_permission' ),
+		) );
+
+		register_rest_route( self::NAMESPACE, '/ai/sync', array(
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => array( $this, 'sync_ai_content' ),
 			'permission_callback' => array( $this, 'check_admin_permission' ),
 		) );
 
@@ -412,6 +431,8 @@ class RestServer {
 			'stripe_secret',
 			'stripe_webhook_secret',
 			'mailchimp_api_key',
+			'voicecore_api_key',
+			'ai_transcript_retention',
 		);
 
 		foreach ( $allowed as $key ) {
@@ -426,6 +447,39 @@ class RestServer {
 
 		update_option( 'formsvox_settings', $settings );
 		return rest_ensure_response( array( 'success' => true, 'settings' => $settings ) );
+	}
+
+	public function get_ai_account( \WP_REST_Request $request ) {
+		$status = \FormsVox\AI\Connection::get_status();
+		return rest_ensure_response( $status );
+	}
+
+	public function sync_ai_content( \WP_REST_Request $request ) {
+		$count = \FormsVox\AI\Ingest::get_instance()->sync_content();
+		return rest_ensure_response( array( 'success' => true, 'count' => $count ) );
+	}
+
+	public function ai_chat_relay( \WP_REST_Request $request ) {
+		$params    = $request->get_json_params();
+		$form_id   = isset( $params['form_id'] ) ? intval( $params['form_id'] ) : 0;
+		$form      = \FormsVox\DB\FormModel::get( $form_id );
+
+		if ( ! $form || 'publish' !== $form['status'] ) {
+			return new \WP_Error( 'form_not_found', __( 'Form not found or unpublished.', 'formsvox' ), array( 'status' => 404 ) );
+		}
+
+		$messages = isset( $params['messages'] ) && is_array( $params['messages'] ) ? $params['messages'] : array();
+		$res      = \FormsVox\AI\Client::request( '/v1/chat', 'POST', array(
+			'form_id'    => $form_id,
+			'messages'   => $messages,
+			'formSchema' => $form['schema'],
+		) );
+
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+
+		return rest_ensure_response( $res );
 	}
 
 	public function get_templates( \WP_REST_Request $request ) {
