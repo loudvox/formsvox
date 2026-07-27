@@ -5,6 +5,7 @@ namespace FormsVox\Tests;
 use PHPUnit\Framework\TestCase;
 use FormsVox\DB\FormModel;
 use FormsVox\DB\EntryModel;
+use FormsVox\API\RestServer;
 
 class AIChatRelayTest extends TestCase {
 	public function test_rate_limiting_transient_key_generation() {
@@ -16,21 +17,43 @@ class AIChatRelayTest extends TestCase {
 		$this->assertEquals( 49, strlen( $rate_key ) );
 	}
 
-	public function test_entry_meta_add_meta_for_ai_transcript() {
-		// Mock entry creation and meta storage
-		$form_id = FormModel::create( 'AI Test Form', array( 'fields' => array() ) );
-		$entry_id = EntryModel::create( $form_id, array( 'name_1' => 'Jane Smith' ) );
-
-		EntryModel::add_meta( $entry_id, '_ai_transcript', array(
-			array( 'role' => 'assistant', 'content' => 'Hello! What is your name?' ),
-			array( 'role' => 'user', 'content' => 'Jane Smith' ),
+	public function test_process_ai_submission_creates_entry_with_transcript_and_score() {
+		$form_id = FormModel::create( 'AI Relay Form', array(
+			'fields' => array(
+				array( 'id' => 'name_1', 'type' => 'text', 'label' => 'Name', 'required' => true ),
+				array( 'id' => 'email_1', 'type' => 'email', 'label' => 'Email' ),
+			),
 		) );
 
-		EntryModel::add_meta( $entry_id, '_ai_score', 92 );
+		$raw_fields = array(
+			'name_1'  => 'John Doe',
+			'email_1' => 'john@example.com',
+		);
+
+		$messages = array(
+			array( 'role' => 'assistant', 'content' => 'Hello!' ),
+			array( 'role' => 'user', 'content' => 'John Doe' ),
+		);
+
+		$server   = RestServer::get_instance();
+		$entry_id = $server->process_ai_submission( $form_id, $raw_fields, $messages, 88 );
+
+		$this->assertNotFalse( $entry_id );
+		$entry = EntryModel::get( $entry_id );
+		$this->assertNotNull( $entry );
+		$this->assertEquals( 'John Doe', $entry['fields']['name_1'] );
+		$this->assertEquals( 'john@example.com', $entry['fields']['email_1'] );
+		$this->assertEquals( '88', $entry['meta']['_ai_score'] );
+		$this->assertNotEmpty( $entry['meta']['_ai_transcript'] );
+	}
+
+	public function test_non_ai_entry_has_no_ai_transcript_or_score() {
+		$form_id  = FormModel::create( 'Standard Form', array( 'fields' => array() ) );
+		$entry_id = EntryModel::create( $form_id, array( 'text_1' => 'Standard submission' ) );
 
 		$entry = EntryModel::get( $entry_id );
 		$this->assertNotNull( $entry );
-		$this->assertEquals( 'Jane Smith', $entry['fields']['name_1'] );
-		$this->assertEquals( '92', $entry['meta']['_ai_score'] );
+		$this->assertArrayNotHasKey( '_ai_transcript', $entry['meta'] );
+		$this->assertArrayNotHasKey( '_ai_score', $entry['meta'] );
 	}
 }

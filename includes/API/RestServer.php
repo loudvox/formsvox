@@ -514,20 +514,79 @@ class RestServer {
 		}
 
 		$messages = isset( $params['messages'] ) && is_array( $params['messages'] ) ? $params['messages'] : array();
+		$self_ref = $this;
 
 		\FormsVox\AI\Client::stream_request( '/v1/chat', 'POST', array(
 			'form_id'    => $form_id,
 			'messages'   => $messages,
 			'formSchema' => $form['schema'],
-		), function( $chunk ) {
+		), function( $chunk ) use ( $self_ref, $form_id, $messages ) {
 			echo $chunk;
 			if ( ob_get_level() > 0 ) {
 				ob_flush();
 			}
 			flush();
+
+			if ( strpos( $chunk, 'tool_call' ) !== false ) {
+				$lines = explode( "\n\n", $chunk );
+				foreach ( $lines as $line ) {
+					if ( strpos( $line, 'data: ' ) === 0 ) {
+						$raw  = substr( $line, 6 );
+						$json = json_decode( $raw, true );
+						if ( isset( $json['type'] ) && 'tool_call' === $json['type'] ) {
+							if ( 'submit_form' === $json['name'] ) {
+								$fields = isset( $json['arguments']['fields'] ) ? $json['arguments']['fields'] : array();
+								$score  = isset( $json['arguments']['score'] ) ? $json['arguments']['score'] : null;
+								$self_ref->process_ai_submission( $form_id, $fields, $messages, $score );
+							}
+						}
+					}
+				}
+			}
 		} );
 
 		exit;
+	}
+
+	public function process_ai_submission( $form_id, $raw_fields = array(), $messages = array(), $score = null ) {
+		$form = FormModel::get( $form_id );
+		if ( ! $form || 'publish' !== $form['status'] ) {
+			return false;
+		}
+
+		$schema           = isset( $form['schema'] ) ? $form['schema'] : array();
+		$fields           = isset( $schema['fields'] ) && is_array( $schema['fields'] ) ? $schema['fields'] : array();
+		$registry         = \FormsVox\Fields\FieldRegistry::get_instance();
+		$sanitized_fields = array();
+
+		foreach ( $fields as $field_config ) {
+			$fid       = isset( $field_config['id'] ) ? $field_config['id'] : '';
+			$type      = isset( $field_config['type'] ) ? $field_config['type'] : 'text';
+			$raw_val   = isset( $raw_fields[ $fid ] ) ? $raw_fields[ $fid ] : '';
+			$field_obj = $registry->get_field( $type );
+
+			if ( $field_obj ) {
+				$val = $field_obj->sanitize( $raw_val, $field_config );
+				if ( ! empty( $field_config['required'] ) && ( null === $val || '' === $val || ( is_array( $val ) && empty( $val ) ) ) ) {
+					return false;
+				}
+				$sanitized_fields[ $fid ] = $val;
+			}
+		}
+
+		$entry_id = EntryModel::create( $form_id, $sanitized_fields );
+
+		// Save AI meta
+		EntryModel::add_meta( $entry_id, '_ai_transcript', $messages );
+		if ( null !== $score ) {
+			EntryModel::add_meta( $entry_id, '_ai_score', (int) $score );
+		}
+
+		// Notifications
+		$notifications = isset( $schema['notifications'] ) ? $schema['notifications'] : array();
+		\FormsVox\Notifications\EmailEngine::get_instance()->send_notifications( $notifications, $form_id, $entry_id, $sanitized_fields );
+
+		return $entry_id;
 	}
 
 	public function get_templates( \WP_REST_Request $request ) {

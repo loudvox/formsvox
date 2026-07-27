@@ -68,7 +68,7 @@ export const EntriesManager: React.FC = () => {
               </thead>
               <tbody>
                 {entries.map((entry) => {
-                  const isAI = Boolean((entry as any)._ai_transcript || (entry as any).source === 'ai');
+                  const isAI = Boolean((entry as any)._ai_transcript);
                   return (
                     <tr key={entry.id} onClick={() => setSelectedEntry(entry)}>
                       <td>
@@ -182,7 +182,12 @@ export const EntriesManager: React.FC = () => {
                 style={{ background: '#fff', padding: '20px', borderRadius: '8px', maxWidth: '600px', width: '100%' }}
               >
                 <h3>VoiceCore AI Transcript & Qualification — Entry #{selectedEntry.id}</h3>
-                <p><strong>Qualification Score:</strong> {(selectedEntry as any)._ai_score || 85} / 100</p>
+                <p>
+                  <strong>Qualification Score: </strong>
+                  {(selectedEntry as any)._ai_score !== undefined && (selectedEntry as any)._ai_score !== null
+                    ? `${(selectedEntry as any)._ai_score} / 100`
+                    : 'Not scored'}
+                </p>
                 <div style={{ maxHeight: '300px', overflowY: 'auto', background: '#f8f9fa', padding: '10px', borderRadius: '4px', marginBottom: '15px' }}>
                   <p><strong>Assistant:</strong> Hello! What is your name?</p>
                   <p><strong>User:</strong> Jane Smith</p>
