@@ -355,10 +355,14 @@ class RestServer {
 			fputcsv( $output, $headers );
 
 			foreach ( $items as $item ) {
-				$row = array( $item['id'], $item['created_at'], $item['ip_address'] );
+				$row = array(
+					$this->sanitize_csv_cell( $item['id'] ),
+					$this->sanitize_csv_cell( $item['created_at'] ),
+					$this->sanitize_csv_cell( $item['ip_address'] ),
+				);
 				if ( isset( $item['fields'] ) ) {
 					foreach ( $item['fields'] as $val ) {
-						$row[] = is_array( $val ) ? wp_json_encode( $val ) : $val;
+						$row[] = $this->sanitize_csv_cell( $val );
 					}
 				}
 				fputcsv( $output, $row );
@@ -366,6 +370,14 @@ class RestServer {
 		}
 		fclose( $output );
 		exit;
+	}
+
+	private function sanitize_csv_cell( $val ) {
+		$str = is_array( $val ) ? wp_json_encode( $val ) : (string) $val;
+		if ( '' !== $str && in_array( substr( $str, 0, 1 ), array( '=', '+', '-', '@' ), true ) ) {
+			return "'" . $str;
+		}
+		return $str;
 	}
 
 	public function get_settings( \WP_REST_Request $request ) {
