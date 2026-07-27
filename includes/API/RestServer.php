@@ -124,6 +124,12 @@ class RestServer {
 			'permission_callback' => array( $this, 'check_admin_permission' ),
 		) );
 
+		register_rest_route( self::NAMESPACE, '/ai/ingest-status', array(
+			'methods'             => \WP_REST_Server::READABLE,
+			'callback'            => array( $this, 'get_ingest_status' ),
+			'permission_callback' => array( $this, 'check_admin_permission' ),
+		) );
+
 		// Settings & Templates
 		register_rest_route( self::NAMESPACE, '/settings', array(
 			array(
@@ -458,6 +464,11 @@ class RestServer {
 	public function sync_ai_content( \WP_REST_Request $request ) {
 		$count = \FormsVox\AI\Ingest::get_instance()->sync_content();
 		return rest_ensure_response( array( 'success' => true, 'count' => $count ) );
+	}
+
+	public function get_ingest_status( \WP_REST_Request $request ) {
+		$progress = \FormsVox\AI\Ingest::get_instance()->get_progress();
+		return rest_ensure_response( $progress );
 	}
 
 	public function ai_chat_relay( \WP_REST_Request $request ) {
