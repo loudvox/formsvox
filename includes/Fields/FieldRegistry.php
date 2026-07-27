@@ -50,6 +50,9 @@ class FieldRegistry {
 			Types\NPS::class,
 			Types\Layout::class,
 			Types\Repeater::class,
+			Types\PaymentSingle::class,
+			Types\PaymentMultiple::class,
+			Types\PaymentTotal::class,
 		);
 
 		foreach ( $default_classes as $class_name ) {

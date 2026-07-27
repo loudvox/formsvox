@@ -30,10 +30,13 @@ const PALETTE_ITEMS = [
   { type: 'nps', label: 'NPS Score', category: 'Fancy' },
   { type: 'layout', label: 'Columns / Layout', category: 'Layout' },
   { type: 'repeater', label: 'Repeater', category: 'Fancy' },
+  { type: 'payment_single', label: 'Single Item', category: 'Payment' },
+  { type: 'payment_multiple', label: 'Multiple Items', category: 'Payment' },
+  { type: 'payment_total', label: 'Total Price', category: 'Payment' },
 ];
 
 export const FieldPalette: React.FC<FieldPaletteProps> = ({ onAddField }) => {
-  const categories = ['Standard', 'Fancy', 'Layout'];
+  const categories = ['Standard', 'Fancy', 'Layout', 'Payment'];
 
   return (
     <div className="formvox-palette">

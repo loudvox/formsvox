@@ -52,6 +52,7 @@ class Plugin {
 		AntiSpam\Honeypot::get_instance();
 		Notifications\EmailEngine::get_instance();
 		Integrations\IntegrationManager::get_instance();
+		Integrations\StripeController::get_instance();
 		Frontend\Renderer::get_instance();
 		Blocks\GutenbergBlock::get_instance();
 		Importers\WPFormsImporter::get_instance();
