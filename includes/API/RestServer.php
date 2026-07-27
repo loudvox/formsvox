@@ -495,18 +495,28 @@ class RestServer {
 		}
 		update_option( $today_key, $daily_cnt + 1 );
 
+		// Send SSE Headers
+		if ( ! headers_sent() ) {
+			header( 'Content-Type: text/event-stream' );
+			header( 'Cache-Control: no-cache' );
+			header( 'X-Accel-Buffering: no' );
+		}
+
 		$messages = isset( $params['messages'] ) && is_array( $params['messages'] ) ? $params['messages'] : array();
-		$res      = \FormsVox\AI\Client::request( '/v1/chat', 'POST', array(
+
+		\FormsVox\AI\Client::stream_request( '/v1/chat', 'POST', array(
 			'form_id'    => $form_id,
 			'messages'   => $messages,
 			'formSchema' => $form['schema'],
-		) );
+		), function( $chunk ) {
+			echo $chunk;
+			if ( ob_get_level() > 0 ) {
+				ob_flush();
+			}
+			flush();
+		} );
 
-		if ( is_wp_error( $res ) ) {
-			return $res;
-		}
-
-		return rest_ensure_response( $res );
+		exit;
 	}
 
 	public function get_templates( \WP_REST_Request $request ) {

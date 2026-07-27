@@ -58,4 +58,36 @@ class Client {
 
 		return $data;
 	}
+
+	public static function stream_request( $endpoint, $method = 'POST', $body = null, $callback = null ) {
+		$key = self::get_api_key();
+		if ( empty( $key ) ) {
+			return new \WP_Error( 'missing_api_key', __( 'VoiceCore API key is missing.', 'formsvox' ), array( 'status' => 401 ) );
+		}
+
+		$url  = self::get_api_url() . $endpoint;
+		$args = array(
+			'method'  => $method,
+			'headers' => array(
+				'Authorization' => 'Bearer ' . $key,
+				'Content-Type'  => 'application/json',
+			),
+			'timeout' => 60,
+		);
+
+		if ( ! empty( $body ) ) {
+			$args['body'] = wp_json_encode( $body );
+		}
+
+		if ( is_callable( $callback ) ) {
+			add_action( 'http_api_curl', function( $handle ) use ( $callback ) {
+				curl_setopt( $handle, CURLOPT_WRITEFUNCTION, function( $curl, $data ) use ( $callback ) {
+					call_user_func( $callback, $data );
+					return strlen( $data );
+				} );
+			} );
+		}
+
+		return wp_remote_request( $url, $args );
+	}
 }
